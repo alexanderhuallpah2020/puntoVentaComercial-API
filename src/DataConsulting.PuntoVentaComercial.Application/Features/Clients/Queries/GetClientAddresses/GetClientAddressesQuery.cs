@@ -1,0 +1,6 @@
+using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
+
+namespace DataConsulting.PuntoVentaComercial.Application.Features.Clients.Queries.GetClientAddresses
+{
+    public sealed record GetClientAddressesQuery(int IdCliente) : IQuery<List<ClientAddressResponse>>;
+}

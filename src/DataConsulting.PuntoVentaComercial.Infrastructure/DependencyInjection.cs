@@ -1,9 +1,11 @@
 ﻿using Asp.Versioning;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
 using DataConsulting.PuntoVentaComercial.Application.Services.Auth;
+using DataConsulting.PuntoVentaComercial.Application.Services.Sunat;
 using DataConsulting.PuntoVentaComercial.Domain.SegmentosSunat;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Auth;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Database;
+using DataConsulting.PuntoVentaComercial.Infrastructure.ExternalServices.Sunat;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +22,7 @@ namespace DataConsulting.PuntoVentaComercial.Infrastructure
             AddPersistence(services, configuration);
             AddApiVersioning(services);
             services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddScoped<ISunatClientLookupService, SunatClientLookupService>();
 
             return services;
         }
