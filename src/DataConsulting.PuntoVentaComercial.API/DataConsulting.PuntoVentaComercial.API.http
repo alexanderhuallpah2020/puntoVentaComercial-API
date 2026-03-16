@@ -1,0 +1,6 @@
+@DataConsulting.PuntoVentaComercial.API_HostAddress = http://localhost:5031
+
+GET {{DataConsulting.PuntoVentaComercial.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DataConsulting.PuntoVentaComercial.API/DataConsulting.PuntoVentaComercial.API.csproj" />
+    <Project Path="src/DataConsulting.PuntoVentaComercial.Application/DataConsulting.PuntoVentaComercial.Application.csproj" />
+    <Project Path="src/DataConsulting.PuntoVentaComercial.Domain/DataConsulting.PuntoVentaComercial.Domain.csproj" />
+    <Project Path="src/DataConsulting.PuntoVentaComercial.Infrastructure/DataConsulting.PuntoVentaComercial.Infrastructure.csproj" />
+  </Folder>
+</Solution>
