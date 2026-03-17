@@ -15,24 +15,24 @@ public sealed record GetVentaByIdResponse(
     decimal ValorVenta,
     decimal Igv,
     decimal ValorExonerado,
-    decimal Isc,
+    decimal? Isc,
     decimal ValorICBPER,
     decimal ImporteTotal,
-    decimal ImportePagado,
-    decimal ImporteVuelto,
+    decimal? ImportePagado,
+    decimal? ImporteVuelto,
     IList<VentaDetalleResponse> Detalles,
     IList<VentaPagoResponse> Pagos);
 
 public sealed record VentaDetalleResponse(
     short Correlativo,
-    int IdArticulo,
+    int? IdArticulo,
     string? DescripcionArticulo,
-    decimal Cantidad,
+    decimal? Cantidad,
     decimal PrecioUnitario,
     decimal ImporteDescuento,
     decimal ValorVenta,
     bool FlagExonerado,
-    int IdTipoAfectoIGV);
+    int? IdTipoAfectoIGV);
 
 public sealed record VentaPagoResponse(
     short IdFormaPago,

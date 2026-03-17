@@ -36,24 +36,25 @@ public sealed class VentaConfiguration : IEntityTypeConfiguration<Venta>
 
         builder.Property(x => x.ValorNeto).HasColumnType("money").IsRequired();
         builder.Property(x => x.ImporteDescuento).HasColumnType("money").IsRequired();
-        builder.Property(x => x.ImporteDescuentoGlobal).HasColumnType("money").IsRequired();
-        builder.Property(x => x.PorcentajeDescuentoGlobal).HasColumnType("decimal(10,4)");
+        builder.Property(x => x.ImporteDescuentoGlobal).HasColumnType("money");
+        builder.Property(x => x.PorcentajeDescuentoGlobal).HasColumnType("money");
         // CORRECCIÓN: columna se llama "Valorventa" (v minúscula)
         builder.Property(x => x.ValorVenta).HasColumnName("Valorventa").HasColumnType("money").IsRequired();
         builder.Property(x => x.Igv).HasColumnName("IGV").HasColumnType("money").IsRequired();
         builder.Property(x => x.ValorExonerado).HasColumnType("money").IsRequired();
         builder.Property(x => x.ImporteTotal).HasColumnType("money").IsRequired();
-        builder.Property(x => x.ImportePagado).HasColumnType("money").IsRequired();
-        builder.Property(x => x.ImporteVuelto).HasColumnType("money").IsRequired();
-        builder.Property(x => x.Redondeo).HasColumnType("money").IsRequired();
-        builder.Property(x => x.Isc).HasColumnName("ISC").HasColumnType("money").IsRequired();
+        builder.Property(x => x.ImportePagado).HasColumnType("money");
+        builder.Property(x => x.ImporteVuelto).HasColumnType("money");
+
+        builder.Property(x => x.Isc).HasColumnName("ISC").HasColumnType("money");
         builder.Property(x => x.ValorICBPER).HasColumnType("smallmoney").IsRequired();
+        builder.Property(x => x.RedondeoTotal).HasColumnType("money");
 
         builder.Property(x => x.IdTipoVenta).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.IdFormaPago).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.IdTurnoAsistencia).HasColumnType("smallint");
         builder.Property(x => x.IdSubdiario).HasColumnType("smallint");
-        builder.Property(x => x.FlagDescPorcentaje).HasColumnType("smallint").IsRequired();
+        builder.Property(x => x.FlagDescPorcentaje).HasColumnType("smallint");
         builder.Property(x => x.FlagPagoAdelantado).HasColumnType("tinyint").IsRequired();
         builder.Property(x => x.FlagDetraccion).HasColumnType("tinyint").IsRequired();
 
@@ -65,17 +66,19 @@ public sealed class VentaConfiguration : IEntityTypeConfiguration<Venta>
 
         // Shadow properties para columnas NOT NULL sin representación en la entidad
         builder.Property<decimal>("DescuentoDetalle").HasColumnType("money").HasDefaultValue(0m);
-        builder.Property<decimal>("ValorRegalo").HasColumnType("money").HasDefaultValue(0m);
+        builder.Property<decimal?>("ValorRegalo").HasColumnType("money");
         builder.Property<byte>("FlagImpresion").HasColumnType("tinyint").HasDefaultValue((byte)0);
         builder.Property<byte>("FlagPrecio").HasColumnType("tinyint").HasDefaultValue((byte)0);
         builder.Property<byte>("FlagCobranzaDudosa").HasColumnType("tinyint").HasDefaultValue((byte)0);
-        builder.Property<short>("IGVFactor").HasColumnType("smallint").HasDefaultValue((short)1800);
+        builder.Property<short?>("IGVFactor").HasColumnType("smallint").HasDefaultValue((short)1800);
         builder.Property<byte>("FlagValorCambio").HasColumnType("tinyint").HasDefaultValue((byte)0);
-        builder.Property<byte>("EstadoContable").HasColumnType("tinyint").HasDefaultValue((byte)0);
+        builder.Property<byte?>("EstadoContable").HasColumnType("tinyint");
         builder.Property<bool>("FlagIGVAfecto").HasColumnType("bit").HasDefaultValue(true);
         builder.Property<byte>("ImpresionCuenta").HasColumnType("tinyint").HasDefaultValue((byte)0);
-        builder.Property<bool>("FlagBoletaItinerante").HasColumnType("bit").HasDefaultValue(false);
-        builder.Property<bool>("FlagComercioExterior").HasColumnType("bit").HasDefaultValue(false);
+        builder.Property<bool?>("FlagBoletaItinerante").HasColumnType("bit");
+        builder.Property<bool?>("FlagComercioExterior").HasColumnType("bit");
+        builder.Property<short?>("ServicioFactor").HasColumnType("smallint").HasDefaultValue((short)0);
+        builder.Property<byte>("EstadoMigracion").HasColumnType("tinyint").HasDefaultValue((byte)1);
 
         builder.HasMany(x => x.Detalles)
                .WithOne()

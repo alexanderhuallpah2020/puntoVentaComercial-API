@@ -49,7 +49,7 @@ public sealed class VentasController(
             request.ImporteTotal,
             request.ImportePagado,
             request.ImporteVuelto,
-            request.Redondeo,
+            request.RedondeoTotal,
             request.IdFormaPago,
             request.FlagDescPorcentaje,
             request.Detalles.Select(d => new CreateVentaDetalleDto(

@@ -16,7 +16,7 @@ public sealed class VentaPagoConfiguration : IEntityTypeConfiguration<VentaPago>
         builder.Property(x => x.IdTipoMoneda).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.Importe).HasColumnType("smallmoney").IsRequired();
         builder.Property(x => x.Estado).HasColumnType("smallint").IsRequired();
-        builder.Property(x => x.UpdateToken).HasColumnType("smallint").IsRequired();
+        builder.Property(x => x.UpdateToken).HasColumnType("smallint");                    // SMALLINT NULL
         builder.Property(x => x.IdUsuarioCreador).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.FechaCreacion).HasColumnType("smalldatetime").IsRequired();
 

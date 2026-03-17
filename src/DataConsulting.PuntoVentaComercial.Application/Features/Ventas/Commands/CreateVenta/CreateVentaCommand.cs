@@ -28,7 +28,7 @@ public sealed record CreateVentaCommand(
     decimal ImporteTotal,
     decimal ImportePagado,
     decimal ImporteVuelto,
-    decimal Redondeo,
+    decimal RedondeoTotal,
     short IdFormaPago,
     short FlagDescPorcentaje,
     IList<CreateVentaDetalleDto> Detalles,

@@ -11,7 +11,7 @@ public sealed class Venta : Entity
     public short IdTipoDocumento { get; private set; }
     public short? NumSerie { get; private set; }
     public int? NumeroDocumento { get; private set; }
-    public int? NroCorrelativo { get; private set; }
+    public int NroCorrelativo { get; private set; }
     public int IdCliente { get; private set; }
     public short? IdTipoCliente { get; private set; }
     public short Vendedor { get; private set; }
@@ -23,22 +23,22 @@ public sealed class Venta : Entity
     public decimal TipoCambio { get; private set; }
     public decimal ValorNeto { get; private set; }
     public decimal ImporteDescuento { get; private set; }
-    public decimal ImporteDescuentoGlobal { get; private set; }
-    public decimal PorcentajeDescuentoGlobal { get; private set; }
+    public decimal? ImporteDescuentoGlobal { get; private set; }    // MONEY NULL
+    public decimal? PorcentajeDescuentoGlobal { get; private set; } // MONEY NULL
     public decimal ValorVenta { get; private set; }   // columna "Valorventa"
     public decimal Igv { get; private set; }           // columna "IGV"
     public decimal ValorExonerado { get; private set; }
     public decimal ImporteTotal { get; private set; }
-    public decimal ImportePagado { get; private set; }
-    public decimal ImporteVuelto { get; private set; }
-    public decimal Redondeo { get; private set; }
-    public decimal Isc { get; private set; }           // columna "ISC"
+    public decimal? ImportePagado { get; private set; }  // MONEY NULL
+    public decimal? ImporteVuelto { get; private set; }  // MONEY NULL
+    public decimal? RedondeoTotal { get; private set; }  // MONEY NULL
+    public decimal? Isc { get; private set; }            // ISC MONEY NULL
     public decimal ValorICBPER { get; private set; }
     public short IdFormaPago { get; private set; }
     public short? IdTurnoAsistencia { get; private set; }
     public short? IdSubdiario { get; private set; }
     public short IdTipoVenta { get; private set; }        // 3 = Directa (POS)
-    public short FlagDescPorcentaje { get; private set; }
+    public short? FlagDescPorcentaje { get; private set; }  // SMALLINT NULL
     public byte FlagPagoAdelantado { get; private set; }
     public byte FlagDetraccion { get; private set; }
     public string UsuarioInsert { get; private set; } = default!;
@@ -63,7 +63,6 @@ public sealed class Venta : Entity
         short idTipoDocumento,
         short? numSerie,
         int? numeroDocumento,
-        int? nroCorrelativo,
         int idCliente,
         short? idTipoCliente,
         short vendedor,
@@ -83,7 +82,7 @@ public sealed class Venta : Entity
         decimal importeTotal,
         decimal importePagado,
         decimal importeVuelto,
-        decimal redondeo,
+        decimal redondeoTotal,
         short idFormaPago,
         short flagDescPorcentaje,
         IList<VentaDetalle> detalles,
@@ -105,14 +104,14 @@ public sealed class Venta : Entity
             IdTipoDocumento            = idTipoDocumento,
             NumSerie                   = numSerie,
             NumeroDocumento            = numeroDocumento,
-            NroCorrelativo             = nroCorrelativo,
+            NroCorrelativo             = numeroDocumento ?? 0,
             IdCliente                  = idCliente,
-            IdTipoCliente              = idTipoCliente,
+            IdTipoCliente              = idTipoCliente ?? 0,
             Vendedor                   = vendedor,
             Vendedor2                  = vendedor2,
             FechaEmision               = DateTime.Now,
             FechaProceso               = DateTime.Now,
-            Estado                     = "E",
+            Estado                     = "A",
             IdTipoMoneda               = idTipoMoneda,
             TipoCambio                 = tipoCambio,
             ValorNeto                  = valorNeto,
@@ -127,7 +126,7 @@ public sealed class Venta : Entity
             ImporteTotal               = importeTotal,
             ImportePagado              = importePagado,
             ImporteVuelto              = importeVuelto,
-            Redondeo                   = redondeo,
+            RedondeoTotal              = redondeoTotal,
             IdFormaPago                = idFormaPago,
             IdTurnoAsistencia          = idTurnoAsistencia,
             IdTipoVenta                = 3,
@@ -150,10 +149,10 @@ public sealed class Venta : Entity
 
     public Result Anular(string usuarioModificador)
     {
-        if (Estado != "E")
+        if (Estado != "A")
             return Result.Failure(VentaErrors.EstadoInvalidoParaAnular);
 
-        Estado           = "A";
+        Estado           = "E";
         UsuarioUpdate    = usuarioModificador;
         FechaUpdate      = DateTime.Now;
         UpdateToken++;

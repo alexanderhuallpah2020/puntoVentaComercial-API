@@ -7,7 +7,7 @@ public sealed class VentaPago
     public short IdTipoMoneda { get; private set; }
     public decimal Importe { get; private set; }
     public short Estado { get; private set; }
-    public short UpdateToken { get; private set; }
+    public short? UpdateToken { get; private set; }
     public short IdUsuarioCreador { get; private set; }
     public DateTime FechaCreacion { get; private set; }
 
