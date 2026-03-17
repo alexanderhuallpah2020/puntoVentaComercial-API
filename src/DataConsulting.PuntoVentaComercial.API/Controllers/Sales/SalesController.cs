@@ -4,8 +4,10 @@ using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
 using DataConsulting.PuntoVentaComercial.Application.Features.Sales.Commands.AnnulSale;
 using DataConsulting.PuntoVentaComercial.Application.Features.Sales.Commands.CalculateSale;
 using DataConsulting.PuntoVentaComercial.Application.Features.Sales.Commands.CreateSale;
+using DataConsulting.PuntoVentaComercial.Application.Features.Sales.Queries.GetPrintableSale;
 using DataConsulting.PuntoVentaComercial.Application.Features.Sales.Queries.GetSaleById;
 using DataConsulting.PuntoVentaComercial.Application.Features.Sales.Queries.GetSales;
+using DataConsulting.PuntoVentaComercial.Application.Services.Print;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,19 +24,25 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Sales
         private readonly ICommandHandler<AnnulSaleCommand> _annulHandler;
         private readonly IQueryHandler<GetSalesQuery, GetSalesResponse> _getSalesHandler;
         private readonly IQueryHandler<GetSaleByIdQuery, GetSaleByIdResponse> _getByIdHandler;
+        private readonly IQueryHandler<GetPrintableSaleQuery, GetPrintableSaleResponse> _printableHandler;
+        private readonly IPrintService _printService;
 
         public SalesController(
             ICommandHandler<CalculateSaleCommand, CalculateSaleResponse> calculateHandler,
             ICommandHandler<CreateSaleCommand, CreateSaleResponse> createHandler,
             ICommandHandler<AnnulSaleCommand> annulHandler,
             IQueryHandler<GetSalesQuery, GetSalesResponse> getSalesHandler,
-            IQueryHandler<GetSaleByIdQuery, GetSaleByIdResponse> getByIdHandler)
+            IQueryHandler<GetSaleByIdQuery, GetSaleByIdResponse> getByIdHandler,
+            IQueryHandler<GetPrintableSaleQuery, GetPrintableSaleResponse> printableHandler,
+            IPrintService printService)
         {
             _calculateHandler = calculateHandler;
             _createHandler = createHandler;
             _annulHandler = annulHandler;
             _getSalesHandler = getSalesHandler;
             _getByIdHandler = getByIdHandler;
+            _printableHandler = printableHandler;
+            _printService = printService;
         }
 
         /// <summary>
@@ -150,6 +158,20 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Sales
         {
             var result = await _getByIdHandler.Handle(new GetSaleByIdQuery(id), cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+        }
+
+        /// <summary>
+        /// Genera el PDF del ticket de una venta (80 mm — impresora térmica).
+        /// </summary>
+        [HttpGet("{id:int}/print")]
+        public async Task<IActionResult> Print(int id, CancellationToken cancellationToken = default)
+        {
+            var result = await _printableHandler.Handle(new GetPrintableSaleQuery(id), cancellationToken);
+            if (result.IsFailure)
+                return NotFound(result.Error);
+
+            var pdf = _printService.GenerateSalePdf(result.Value);
+            return File(pdf, "application/pdf", $"venta-{id}.pdf");
         }
 
         /// <summary>

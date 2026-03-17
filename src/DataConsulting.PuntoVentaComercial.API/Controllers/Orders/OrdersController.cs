@@ -5,6 +5,8 @@ using DataConsulting.PuntoVentaComercial.Application.Features.Orders.Commands.An
 using DataConsulting.PuntoVentaComercial.Application.Features.Orders.Commands.CreateOrder;
 using DataConsulting.PuntoVentaComercial.Application.Features.Orders.Queries.GetOrderById;
 using DataConsulting.PuntoVentaComercial.Application.Features.Orders.Queries.GetOrders;
+using DataConsulting.PuntoVentaComercial.Application.Features.Orders.Queries.GetPrintableOrder;
+using DataConsulting.PuntoVentaComercial.Application.Services.Print;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,17 +22,23 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Orders
         private readonly ICommandHandler<AnnulOrderCommand> _annulHandler;
         private readonly IQueryHandler<GetOrdersQuery, GetOrdersResponse> _getOrdersHandler;
         private readonly IQueryHandler<GetOrderByIdQuery, GetOrderByIdResponse> _getByIdHandler;
+        private readonly IQueryHandler<GetPrintableOrderQuery, GetPrintableOrderResponse> _printableHandler;
+        private readonly IPrintService _printService;
 
         public OrdersController(
             ICommandHandler<CreateOrderCommand, CreateOrderResponse> createHandler,
             ICommandHandler<AnnulOrderCommand> annulHandler,
             IQueryHandler<GetOrdersQuery, GetOrdersResponse> getOrdersHandler,
-            IQueryHandler<GetOrderByIdQuery, GetOrderByIdResponse> getByIdHandler)
+            IQueryHandler<GetOrderByIdQuery, GetOrderByIdResponse> getByIdHandler,
+            IQueryHandler<GetPrintableOrderQuery, GetPrintableOrderResponse> printableHandler,
+            IPrintService printService)
         {
             _createHandler = createHandler;
             _annulHandler = annulHandler;
             _getOrdersHandler = getOrdersHandler;
             _getByIdHandler = getByIdHandler;
+            _printableHandler = printableHandler;
+            _printService = printService;
         }
 
         /// <summary>
@@ -114,6 +122,20 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Orders
         {
             var result = await _getByIdHandler.Handle(new GetOrderByIdQuery(id), cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+        }
+
+        /// <summary>
+        /// Genera el PDF del ticket de un pedido (80 mm — impresora térmica).
+        /// </summary>
+        [HttpGet("{id:int}/print")]
+        public async Task<IActionResult> Print(int id, CancellationToken cancellationToken = default)
+        {
+            var result = await _printableHandler.Handle(new GetPrintableOrderQuery(id), cancellationToken);
+            if (result.IsFailure)
+                return NotFound(result.Error);
+
+            var pdf = _printService.GenerateOrderPdf(result.Value);
+            return File(pdf, "application/pdf", $"pedido-{id}.pdf");
         }
 
         /// <summary>

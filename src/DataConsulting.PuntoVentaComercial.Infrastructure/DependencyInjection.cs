@@ -1,10 +1,12 @@
 ﻿using Asp.Versioning;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
 using DataConsulting.PuntoVentaComercial.Application.Services.Auth;
+using DataConsulting.PuntoVentaComercial.Application.Services.Print;
 using DataConsulting.PuntoVentaComercial.Application.Services.Sunat;
 using DataConsulting.PuntoVentaComercial.Domain.SegmentosSunat;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Auth;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Database;
+using DataConsulting.PuntoVentaComercial.Infrastructure.ExternalServices.Print;
 using DataConsulting.PuntoVentaComercial.Infrastructure.ExternalServices.Sunat;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +49,7 @@ namespace DataConsulting.PuntoVentaComercial.Infrastructure
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<ISunatClientLookupService, SunatClientLookupService>();
+            services.AddScoped<IPrintService, PdfPrintService>();
         }
 
         private static void AddApiVersioning(IServiceCollection services)
