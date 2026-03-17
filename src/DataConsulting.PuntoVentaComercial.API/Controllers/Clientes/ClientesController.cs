@@ -15,7 +15,7 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Clientes;
 [Route("api/v{version:apiVersion}/clientes")]
 public sealed class ClientesController(
     ICommandHandler<CreateClienteCommand, int> createHandler,
-    ICommandHandler<UpdateClienteCommand> updateHandler,
+    ICommandHandler<UpdateClienteCommand, bool> updateHandler,
     IQueryHandler<GetClienteByIdQuery, GetClienteByIdResponse> getByIdHandler,
     IQueryHandler<SearchClientesQuery, SearchClientesResponse> searchHandler,
     IQueryHandler<GetClienteAddressesQuery, IList<ClienteLocalResponse>> addressesHandler,
@@ -71,7 +71,7 @@ public sealed class ClientesController(
             request.CodValidadorDoc, request.IdPais, request.DireccionLocal, request.Telefono1);
 
         var result = await updateHandler.Handle(command, ct);
-        return result.IsSuccess ? NoContent() : BadRequest(result.Error);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
     [HttpGet("{id:int}/addresses")]

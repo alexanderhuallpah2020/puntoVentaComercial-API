@@ -66,4 +66,10 @@ internal sealed class ClienteRepository(ApplicationDbContext dbContext)
         int max = await DbContext.ClienteLocales.MaxAsync(x => (int?)x.Id, ct) ?? 0;
         return max + 1;
     }
+
+    public async Task<int> GetNextLocalUnicoIdAsync(CancellationToken ct)
+    {
+        int max = await DbContext.ClienteLocales.MaxAsync(x => (int?)x.IdLocalUnico, ct) ?? 0;
+        return max + 1;
+    }
 }

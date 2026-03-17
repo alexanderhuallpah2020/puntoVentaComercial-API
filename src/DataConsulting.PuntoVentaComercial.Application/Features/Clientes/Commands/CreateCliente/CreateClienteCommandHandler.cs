@@ -37,7 +37,8 @@ internal sealed class CreateClienteCommandHandler(
                 return Result.Failure<int>(ClienteErrors.DocumentoDuplicado(request.NumDocumento));
         }
 
-        int nuevoLocalId = await repository.GetNextLocalIdAsync(cancellationToken);
+        int nuevoLocalId      = await repository.GetNextLocalIdAsync(cancellationToken);
+        int nuevoLocalUnicoId = await repository.GetNextLocalUnicoIdAsync(cancellationToken);
 
         var result = Cliente.Create(
             request.Nombre,
@@ -49,6 +50,7 @@ internal sealed class CreateClienteCommandHandler(
             request.Telefono1,
             request.IdSucursal,
             idLocal: nuevoLocalId,
+            idLocalUnico: nuevoLocalUnicoId,
             usuarioCreador: "SISTEMA");
 
         if (result.IsFailure)

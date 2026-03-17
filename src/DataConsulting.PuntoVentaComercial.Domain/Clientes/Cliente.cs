@@ -53,6 +53,7 @@ public sealed class Cliente : Entity
         string? telefono1,
         short idSucursal,
         int idLocal,
+        int idLocalUnico,
         string usuarioCreador)
     {
         if (string.IsNullOrWhiteSpace(nombre))
@@ -71,7 +72,8 @@ public sealed class Cliente : Entity
             NombreComercial  = nombre.Trim(),
             IdDocumentoIdentidad = idDocumentoIdentidad,
             NumDocumento     = numDocumento?.Trim(),
-            CodValidadorDoc  = codValidadorDoc?.Trim(),
+            CodValidadorDoc  = codValidadorDoc?.Trim() ?? "",
+            Observaciones    = String.Empty,
             EstadoCliente    = "A",
             FlagTipoCliente  = (int)ETipoCliente.ClienteLocal,
             FlagSexo         = (byte)EFlagSexo.Empresa,
@@ -86,7 +88,7 @@ public sealed class Cliente : Entity
             FechaCreacion    = DateTime.Now
         };
 
-        var local = ClienteLocal.Create(idLocal, direccionLocal, telefono1, idSucursal);
+        var local = ClienteLocal.Create(idLocal, idLocalUnico, direccionLocal, telefono1, idSucursal);
         cliente._clienteLocales.Add(local);
 
         return Result.Success(cliente);

@@ -8,9 +8,10 @@ public sealed class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
 {
     public void Configure(EntityTypeBuilder<Cliente> builder)
     {
-        builder.ToTable("Cliente", "dbo");
+        builder.ToTable("Cliente", "dbo", tb => tb.UseSqlOutputClause(false));
         builder.HasKey(x => x.Id);
         // IdCliente es IDENTITY(1,1) — EF asigna el Id tras el INSERT
+        // UseSqlOutputClause(false) necesario porque la tabla tiene triggers
         builder.Property(x => x.Id).HasColumnName("IdCliente").ValueGeneratedOnAdd();
 
         builder.Property(x => x.IdTipoCliente).HasColumnType("smallint").IsRequired();
@@ -18,12 +19,9 @@ public sealed class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
         builder.Property(x => x.NombreComercial).HasMaxLength(100);
         builder.Property(x => x.IdDocumentoIdentidad).HasColumnType("smallint");
         builder.Property(x => x.NumDocumento).HasMaxLength(20);
-        // NOT NULL en la BD pero nullable en entidad → value converter null → ""
-        builder.Property(x => x.CodValidadorDoc).HasMaxLength(3)
-            .HasConversion(v => v ?? "", v => string.IsNullOrEmpty(v) ? null : v);
+        builder.Property(x => x.CodValidadorDoc).HasMaxLength(3);
         builder.Property(x => x.EstadoCliente).HasMaxLength(1).IsFixedLength().IsRequired();
-        builder.Property(x => x.Observaciones).HasMaxLength(200)
-            .HasConversion(v => v ?? "", v => string.IsNullOrEmpty(v) ? null : v);
+        builder.Property(x => x.Observaciones).HasMaxLength(200);
 
         builder.Property(x => x.FlagTipoCliente).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.FlagSexo).HasColumnType("tinyint");
@@ -56,9 +54,9 @@ public sealed class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
         builder.Property(x => x.UsuarioModificador).HasMaxLength(20);
         builder.Property(x => x.FechaModificacion).HasColumnType("smalldatetime");
 
-        // Columnas NOT NULL de la BD no representadas en la entidad — defaults aplicados en SaveChangesAsync
-        builder.Property<string>("CondicionPago").HasMaxLength(100).IsRequired().HasDefaultValue("");
-        builder.Property<byte>("FlagClientesVarios").HasColumnType("tinyint").IsRequired().HasDefaultValue((byte)2);
+        // Shadow properties para columnas NOT NULL sin representación en la entidad
+        builder.Property<string>("CondicionPago").HasMaxLength(100).IsRequired();
+        builder.Property<byte>("FlagClientesVarios").HasColumnType("tinyint").IsRequired();
 
         builder.HasMany(x => x.ClienteLocales)
                .WithOne()

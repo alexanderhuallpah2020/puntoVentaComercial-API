@@ -17,12 +17,13 @@ public sealed class ClienteLocal : Entity
 
     internal static ClienteLocal Create(
         int id,
+        int idLocalUnico,
         string direccionLocal,
         string? telefono1,
         short idSucursal) => new()
     {
         Id             = id,
-        IdLocalUnico   = id,
+        IdLocalUnico   = idLocalUnico,
         DireccionLocal = direccionLocal.Trim(),
         Telefono1      = telefono1?.Trim(),
         IdSucursal     = idSucursal,

@@ -10,4 +10,4 @@ public sealed record UpdateClienteCommand(
     string? CodValidadorDoc,
     short IdPais,
     string DireccionLocal,
-    string? Telefono1) : ICommand;
+    string? Telefono1) : ICommand<bool>;

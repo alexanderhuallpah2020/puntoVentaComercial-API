@@ -15,5 +15,6 @@ public interface IClienteRepository
     Task<IList<ClienteLocal>> GetAddressesByClienteIdAsync(int idCliente, CancellationToken ct);
     Task<int> GetNextIdAsync(CancellationToken ct);
     Task<int> GetNextLocalIdAsync(CancellationToken ct);
+    Task<int> GetNextLocalUnicoIdAsync(CancellationToken ct);
     void Add(Cliente cliente);
 }

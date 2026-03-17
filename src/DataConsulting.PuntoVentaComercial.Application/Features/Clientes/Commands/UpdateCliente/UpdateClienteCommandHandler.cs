@@ -12,26 +12,26 @@ internal sealed class UpdateClienteCommandHandler(
     IDocumentoIdentidadRepository documentoIdentidadRepository,
     IPaisRepository paisRepository,
     IUnitOfWork unitOfWork)
-    : ICommandHandler<UpdateClienteCommand>
+    : ICommandHandler<UpdateClienteCommand, bool>
 {
-    public async Task<Result> Handle(
+    public async Task<Result<bool>> Handle(
         UpdateClienteCommand request, CancellationToken cancellationToken)
     {
         var cliente = await repository.GetByIdAsync(request.IdCliente, cancellationToken);
         if (cliente is null)
-            return Result.Failure(ClienteErrors.NotFound(request.IdCliente));
+            return Result.Failure<bool>(ClienteErrors.NotFound(request.IdCliente));
 
         if (request.IdDocumentoIdentidad.HasValue)
         {
             bool existeDoc = await documentoIdentidadRepository.ExistsAsync(
                 request.IdDocumentoIdentidad.Value, cancellationToken);
             if (!existeDoc)
-                return Result.Failure(ClienteErrors.DocumentoIdentidadNoEncontrado(request.IdDocumentoIdentidad.Value));
+                return Result.Failure<bool>(ClienteErrors.DocumentoIdentidadNoEncontrado(request.IdDocumentoIdentidad.Value));
         }
 
         bool existePais = await paisRepository.ExistsAsync(request.IdPais, cancellationToken);
         if (!existePais)
-            return Result.Failure(ClienteErrors.PaisNoEncontrado(request.IdPais));
+            return Result.Failure<bool>(ClienteErrors.PaisNoEncontrado(request.IdPais));
 
         var result = cliente.Update(
             request.Nombre,
@@ -44,9 +44,9 @@ internal sealed class UpdateClienteCommandHandler(
             usuarioModificador: "SISTEMA");
 
         if (result.IsFailure)
-            return result;
+            return Result.Failure<bool>(result.Error);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return Result.Success();
+        return Result.Success(true);
     }
 }
