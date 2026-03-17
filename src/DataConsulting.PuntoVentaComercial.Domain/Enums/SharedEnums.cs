@@ -29,4 +29,12 @@
         Manual = 1,
         Migrado = 2
     }
+
+    public enum ETipoDocIdentidad
+    {
+        SinDocumento = 0,
+        DNI = 1,
+        CarnetExtranjeria = 4,
+        RUC = 6
+    }
 }

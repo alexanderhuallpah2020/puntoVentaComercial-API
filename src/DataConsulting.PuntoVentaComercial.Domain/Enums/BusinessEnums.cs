@@ -46,4 +46,23 @@
         Maniobra = 21601,
         Travesia = 21602
     }
+
+    public enum ETipoCliente
+    {
+        ClienteLocal = 1,
+        ClienteNacional = 2,
+        ClienteExtranjero = 3
+    }
+
+    public enum ECliente
+    {
+        Varios = 1
+    }
+
+    public enum EFlagSexo : byte
+    {
+        Empresa = 0,
+        Masculino = 1,
+        Femenino = 2
+    }
 }
