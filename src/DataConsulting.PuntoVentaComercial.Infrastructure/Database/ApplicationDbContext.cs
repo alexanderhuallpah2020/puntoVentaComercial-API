@@ -5,6 +5,7 @@ using DataConsulting.PuntoVentaComercial.Domain.DocumentosIdentidad;
 using DataConsulting.PuntoVentaComercial.Domain.FamiliasSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Paises;
 using DataConsulting.PuntoVentaComercial.Domain.SegmentosSunat;
+using DataConsulting.PuntoVentaComercial.Domain.Ventas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data.Common;
@@ -25,6 +26,9 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext, IUn
     public DbSet<ClienteLocal>         ClienteLocales       { get; set; }
     public DbSet<DocumentoIdentidad>   DocumentosIdentidad  { get; set; }
     public DbSet<Pais>                 Paises               { get; set; }
+    public DbSet<Venta>                Ventas               { get; set; }
+    public DbSet<VentaDetalle>         VentaDetalles        { get; set; }
+    public DbSet<VentaPago>            VentaPagos           { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

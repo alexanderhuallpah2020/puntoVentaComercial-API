@@ -65,4 +65,26 @@
         Masculino = 1,
         Femenino = 2
     }
+
+    // SUNAT Catálogo 07 — Tipo de afectación al IGV
+    public enum ETipoAfectacionIGV : int
+    {
+        GravadoOneroso          = 10,
+        GravadoRetiro           = 11,
+        GravadoItinerante       = 12,
+        GravadoNoDomiciliado    = 13,
+        GravadoConcesion        = 14,
+        GravadoSinEfectoIGV     = 15,
+        GravadoOtros            = 16,
+        ExoneradoOneroso        = 20,
+        ExoneradoRetiro         = 21,
+        InafectoOneroso         = 30,
+        InafectoRetiro          = 31,
+        InafectoRetiroEmpresa   = 32,
+        InafectoTransferencia   = 33,
+        InafectoItinerante      = 34,
+        InafectoConcesion       = 35,
+        InafectoOtros           = 36,
+        Exportacion             = 40
+    }
 }

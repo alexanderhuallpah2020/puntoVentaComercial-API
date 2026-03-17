@@ -106,4 +106,14 @@
         ICPBER = 6
     }
 
+    // Comprobantes de pago usados en el POS (subconjunto de EDocumento)
+    public enum ETipoComprobante : short
+    {
+        Factura      = 9,
+        Boleta       = 10,
+        Ticket       = 12,
+        NotaCredito  = 15,
+        NotaDebito   = 16
+    }
+
 }
