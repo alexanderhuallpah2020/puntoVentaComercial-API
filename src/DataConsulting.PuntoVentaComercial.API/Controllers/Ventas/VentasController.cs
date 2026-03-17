@@ -30,6 +30,7 @@ public sealed class VentasController(
             request.IdSubSede,
             request.IdTipoDocumento,
             request.NumSerie,
+            request.NumSerieA,
             request.IdCliente,
             request.IdTipoCliente,
             request.IdVendedor,

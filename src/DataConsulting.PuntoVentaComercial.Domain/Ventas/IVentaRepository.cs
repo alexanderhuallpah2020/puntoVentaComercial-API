@@ -15,6 +15,6 @@ public interface IVentaRepository
         int pageSize,
         CancellationToken ct);
     Task<int> GetNextNumeroDocumentoAsync(
-        short idSucursal, short idTipoDocumento, short numSerie, CancellationToken ct);
+        short idSucursal, short idTipoDocumento, string numSerieA, CancellationToken ct);
     void Add(Venta venta);
 }

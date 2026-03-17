@@ -10,6 +10,7 @@ public sealed class Venta : Entity
     public short IdSubSede { get; private set; }
     public short IdTipoDocumento { get; private set; }
     public short? NumSerie { get; private set; }
+    public string? NumSerieA { get; private set; }   // serie alfanumérica ej. 'F001', 'B001'
     public int? NumeroDocumento { get; private set; }
     public int NroCorrelativo { get; private set; }
     public int IdCliente { get; private set; }
@@ -62,6 +63,7 @@ public sealed class Venta : Entity
         short idSubSede,
         short idTipoDocumento,
         short? numSerie,
+        string? numSerieA,
         int? numeroDocumento,
         int idCliente,
         short? idTipoCliente,
@@ -103,6 +105,7 @@ public sealed class Venta : Entity
             IdSubSede                  = idSubSede,
             IdTipoDocumento            = idTipoDocumento,
             NumSerie                   = numSerie,
+            NumSerieA                  = numSerieA,
             NumeroDocumento            = numeroDocumento,
             NroCorrelativo             = numeroDocumento ?? 0,
             IdCliente                  = idCliente,

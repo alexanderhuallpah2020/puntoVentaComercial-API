@@ -20,7 +20,7 @@ internal sealed class CreateVentaCommandHandler(
             return Result.Failure<int>(VentaErrors.ClienteNoEncontrado(request.IdCliente));
 
         int nextNumero = await ventaRepository.GetNextNumeroDocumentoAsync(
-            request.IdSucursal, request.IdTipoDocumento, request.NumSerie, cancellationToken);
+            request.IdSucursal, request.IdTipoDocumento, request.NumSerieA, cancellationToken);
 
         short correlativo = 1;
         var detalles = request.Detalles
@@ -51,6 +51,7 @@ internal sealed class CreateVentaCommandHandler(
             request.IdSubSede,
             request.IdTipoDocumento,
             request.NumSerie,
+            request.NumSerieA,
             nextNumero,
             request.IdCliente,
             request.IdTipoCliente,

@@ -19,6 +19,7 @@ public sealed class VentaConfiguration : IEntityTypeConfiguration<Venta>
         builder.Property(x => x.IdSubSede).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.IdTipoDocumento).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.NumSerie).HasColumnType("smallint");
+        builder.Property(x => x.NumSerieA).HasMaxLength(5);             // VARCHAR(5) NULL
         builder.Property(x => x.NumeroDocumento).HasColumnType("int");
         builder.Property(x => x.NroCorrelativo).HasColumnType("int");
 
@@ -64,21 +65,21 @@ public sealed class VentaConfiguration : IEntityTypeConfiguration<Venta>
         builder.Property(x => x.FechaUpdate).HasColumnType("smalldatetime");
         builder.Property(x => x.UpdateToken).HasColumnType("tinyint").IsConcurrencyToken();
 
-        // Shadow properties para columnas NOT NULL sin representación en la entidad
-        builder.Property<decimal>("DescuentoDetalle").HasColumnType("money").HasDefaultValue(0m);
+        // Shadow properties — NOT NULL sin DEFAULT en BD: ValueGeneratedNever() fuerza EF a incluir el valor en INSERT
+        builder.Property<decimal>("DescuentoDetalle").HasColumnType("money").HasDefaultValue(0m).ValueGeneratedNever();
         builder.Property<decimal?>("ValorRegalo").HasColumnType("money");
-        builder.Property<byte>("FlagImpresion").HasColumnType("tinyint").HasDefaultValue((byte)0);
-        builder.Property<byte>("FlagPrecio").HasColumnType("tinyint").HasDefaultValue((byte)0);
-        builder.Property<byte>("FlagCobranzaDudosa").HasColumnType("tinyint").HasDefaultValue((byte)0);
-        builder.Property<short?>("IGVFactor").HasColumnType("smallint").HasDefaultValue((short)1800);
-        builder.Property<byte>("FlagValorCambio").HasColumnType("tinyint").HasDefaultValue((byte)0);
+        builder.Property<byte>("FlagImpresion").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
+        builder.Property<byte>("FlagPrecio").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
+        builder.Property<byte>("FlagCobranzaDudosa").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
+        builder.Property<short?>("IGVFactor").HasColumnType("smallint").HasDefaultValue((short)1800);   // ApplyShadowPropertyDefaults cubre null→1800
+        builder.Property<byte>("FlagValorCambio").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
         builder.Property<byte?>("EstadoContable").HasColumnType("tinyint");
-        builder.Property<bool>("FlagIGVAfecto").HasColumnType("bit").HasDefaultValue(true);
-        builder.Property<byte>("ImpresionCuenta").HasColumnType("tinyint").HasDefaultValue((byte)0);
+        builder.Property<bool>("FlagIGVAfecto").HasColumnType("bit").HasDefaultValue(true).ValueGeneratedNever();
+        builder.Property<byte>("ImpresionCuenta").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
         builder.Property<bool?>("FlagBoletaItinerante").HasColumnType("bit");
         builder.Property<bool?>("FlagComercioExterior").HasColumnType("bit");
-        builder.Property<short?>("ServicioFactor").HasColumnType("smallint").HasDefaultValue((short)0);
-        builder.Property<byte>("EstadoMigracion").HasColumnType("tinyint").HasDefaultValue((byte)1);
+        builder.Property<short?>("ServicioFactor").HasColumnType("smallint").HasDefaultValue((short)0); // ApplyShadowPropertyDefaults cubre null→0
+        builder.Property<byte>("EstadoMigracion").HasColumnType("tinyint").HasDefaultValue((byte)1);    // BD tiene DEFAULT((1)): EF puede omitirlo
 
         builder.HasMany(x => x.Detalles)
                .WithOne()

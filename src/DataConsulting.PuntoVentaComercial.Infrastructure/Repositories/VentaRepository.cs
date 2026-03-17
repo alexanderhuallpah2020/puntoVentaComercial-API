@@ -59,11 +59,12 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
     }
 
     public async Task<int> GetNextNumeroDocumentoAsync(
-        short idSucursal, short idTipoDocumento, short numSerie, CancellationToken ct)
+        short idSucursal, short idTipoDocumento, string numSerieA, CancellationToken ct)
     {
-        // Llama al SP atómico que incrementa CorrelativoDocumento.UltimoDocumento
+        // @NumSerie siempre es 0; el SP busca por NumSerieA (ej. 'F001', 'B001')
+        short numSerie = 0;
         var result = await DbContext.Database
-            .SqlQuery<int>($"EXEC dbo.GetNuevoCorrelativoDocumento {idSucursal}, {idTipoDocumento}, {numSerie}, N''")
+            .SqlQuery<int>($"EXEC dbo.GetNuevoCorrelativoDocumento {idSucursal}, {idTipoDocumento}, {numSerie}, {numSerieA}")
             .ToListAsync(ct);
         return result.FirstOrDefault();
     }

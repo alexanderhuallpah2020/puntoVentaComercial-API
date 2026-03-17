@@ -38,14 +38,14 @@ public sealed class VentaDetalleConfiguration : IEntityTypeConfiguration<VentaDe
         builder.Property(x => x.IdUsuarioCreador).HasColumnType("smallint");              // SMALLINT NULL
         builder.Property(x => x.FechaCreacion).HasColumnType("smalldatetime");            // SMALLDATETIME NULL
 
-        // Shadow properties para columnas NOT NULL sin representación en la entidad
-        builder.Property<decimal>("ImporteEventa").HasColumnType("money").HasDefaultValue(0m);
-        builder.Property<decimal?>("TasaISC").HasColumnType("money");                      // MONEY NULL
-        builder.Property<short?>("TipoISC").HasColumnType("smallint");                    // SMALLINT NULL
-        builder.Property<decimal?>("PorPercepcion").HasColumnType("money");               // MONEY NULL
-        builder.Property<decimal?>("MontoPercepcion").HasColumnType("money");             // MONEY NULL
-        builder.Property<byte>("FlagPagoAdelantadoDet").HasColumnType("tinyint").HasDefaultValue((byte)0);
-        builder.Property<byte>("FlagDetalle").HasColumnType("tinyint").HasDefaultValue((byte)0);
-        builder.Property<bool>("FlagICBPER").HasColumnType("bit").HasDefaultValue(false);
+        // Shadow properties — sin DEFAULT en BD: ValueGeneratedNever() fuerza EF a incluir el valor en INSERT
+        builder.Property<decimal>("ImporteEventa").HasColumnType("money").HasDefaultValue(0m).ValueGeneratedNever();
+        builder.Property<decimal?>("TasaISC").HasColumnType("money");                           // MONEY NULL
+        builder.Property<short?>("TipoISC").HasColumnType("smallint");                          // SMALLINT NULL
+        builder.Property<decimal?>("PorPercepcion").HasColumnType("money");                     // MONEY NULL
+        builder.Property<decimal?>("MontoPercepcion").HasColumnType("money");                   // MONEY NULL
+        builder.Property<byte>("FlagPagoAdelantadoDet").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
+        builder.Property<byte>("FlagDetalle").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
+        builder.Property<bool>("FlagICBPER").HasColumnType("bit").HasDefaultValue(false);       // BD tiene DEFAULT((0)): EF puede omitirlo
     }
 }
