@@ -1,21 +1,15 @@
 ﻿using DataConsulting.PuntoVentaComercial.Domain.Cash;
-using DataConsulting.PuntoVentaComercial.Domain.Sunat;
-using DataConsulting.PuntoVentaComercial.Domain.ClasesSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Clients;
-using DataConsulting.PuntoVentaComercial.Domain.FamiliasSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Orders;
 using DataConsulting.PuntoVentaComercial.Domain.Payments;
 using DataConsulting.PuntoVentaComercial.Domain.Sales;
-using DataConsulting.PuntoVentaComercial.Domain.SegmentosSunat;
+using DataConsulting.PuntoVentaComercial.Domain.Sunat;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataConsulting.PuntoVentaComercial.Application.Abstractions.Data
 {
     public interface IApplicationDbContext
     {
-        DbSet<SegmentoSunat> SegmentosSunat { get; }
-        DbSet<FamiliaSunat> FamiliasSunat { get; }
-        DbSet<ClaseSunat> ClasesSunat { get; }
         DbSet<Client> Clients { get; }
         DbSet<ClientLocal> ClientLocals { get; }
         DbSet<Sale> Sales { get; }

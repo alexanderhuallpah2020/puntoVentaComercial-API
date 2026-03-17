@@ -1,4 +1,3 @@
-using DataConsulting.PuntoVentaComercial.Domain.Enums;
 using FluentValidation;
 
 namespace DataConsulting.PuntoVentaComercial.Application.Features.Cash.Commands.CreateVaultDeposit

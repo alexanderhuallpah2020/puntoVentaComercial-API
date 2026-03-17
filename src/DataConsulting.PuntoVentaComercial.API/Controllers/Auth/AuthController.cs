@@ -65,9 +65,9 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Auth
         public async Task<IActionResult> GetEnvironment(CancellationToken cancellationToken = default)
         {
             var query = new GetSessionEnvironmentQuery(
-                IdEmpresa:    GetClaimInt("empresa_id"),
-                IdSucursal:   GetClaimInt("sucursal_id"),
-                IdEstacion:   GetClaimInt("estacion_id"),
+                IdEmpresa: GetClaimInt("empresa_id"),
+                IdSucursal: GetClaimInt("sucursal_id"),
+                IdEstacion: GetClaimInt("estacion_id"),
                 IdTrabajador: GetClaimInt("trabajador_id"));
 
             var result = await _sessionHandler.Handle(query, cancellationToken);

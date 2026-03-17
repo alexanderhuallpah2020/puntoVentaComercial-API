@@ -1,7 +1,6 @@
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
 using DataConsulting.PuntoVentaComercial.Application.Services.Sales;
 using DataConsulting.PuntoVentaComercial.Domain.Abstractions;
-using DataConsulting.PuntoVentaComercial.Domain.Enums;
 using DataConsulting.PuntoVentaComercial.Domain.Sales;
 
 namespace DataConsulting.PuntoVentaComercial.Application.Features.Sales.Commands.CalculateSale

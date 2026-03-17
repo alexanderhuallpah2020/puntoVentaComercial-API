@@ -7,7 +7,6 @@ using DataConsulting.PuntoVentaComercial.Application.Features.Orders.Queries.Get
 using DataConsulting.PuntoVentaComercial.Application.Features.Orders.Queries.GetOrders;
 using DataConsulting.PuntoVentaComercial.Application.Features.Orders.Queries.GetPrintableOrder;
 using DataConsulting.PuntoVentaComercial.Application.Services.Print;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataConsulting.PuntoVentaComercial.API.Controllers.Orders
@@ -15,7 +14,7 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Orders
     [ApiController]
     [ApiVersion(ApiVersions.V1)]
     [Route("api/v{version:apiVersion}/orders")]
-    [Authorize]
+    //[Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly ICommandHandler<CreateOrderCommand, CreateOrderResponse> _createHandler;

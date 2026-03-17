@@ -16,7 +16,7 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Sales
     [ApiController]
     [ApiVersion(ApiVersions.V1)]
     [Route("api/v{version:apiVersion}/sales")]
-    [Authorize]
+    //[Authorize]
     public class SalesController : ControllerBase
     {
         private readonly ICommandHandler<CalculateSaleCommand, CalculateSaleResponse> _calculateHandler;

@@ -2,8 +2,8 @@ using Dapper;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
 using DataConsulting.PuntoVentaComercial.Domain.Configuration;
 using DataConsulting.PuntoVentaComercial.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataConsulting.PuntoVentaComercial.Infrastructure.Repositories
 {

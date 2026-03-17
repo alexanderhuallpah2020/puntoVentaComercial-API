@@ -3,7 +3,6 @@ using DataConsulting.PuntoVentaComercial.API.Utils;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
 using DataConsulting.PuntoVentaComercial.Application.Features.Payments.Commands.RegisterPayment;
 using DataConsulting.PuntoVentaComercial.Application.Features.Payments.Queries.GetPaymentMethods;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataConsulting.PuntoVentaComercial.API.Controllers.Payments
@@ -11,7 +10,7 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Payments
     [ApiController]
     [ApiVersion(ApiVersions.V1)]
     [Route("api/v{version:apiVersion}/payments")]
-    [Authorize]
+    //[Authorize]
     public class PaymentsController : ControllerBase
     {
         private readonly ICommandHandler<RegisterPaymentCommand, RegisterPaymentResponse> _registerHandler;

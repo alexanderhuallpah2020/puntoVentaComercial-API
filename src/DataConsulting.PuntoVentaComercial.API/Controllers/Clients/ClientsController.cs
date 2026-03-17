@@ -7,8 +7,6 @@ using DataConsulting.PuntoVentaComercial.Application.Features.Clients.Queries.Ge
 using DataConsulting.PuntoVentaComercial.Application.Features.Clients.Queries.GetClientById;
 using DataConsulting.PuntoVentaComercial.Application.Features.Clients.Queries.LookupRucSunat;
 using DataConsulting.PuntoVentaComercial.Application.Features.Clients.Queries.SearchClients;
-using DataConsulting.PuntoVentaComercial.Domain.Abstractions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataConsulting.PuntoVentaComercial.API.Controllers.Clients
@@ -16,7 +14,7 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Clients
     [ApiController]
     [ApiVersion(ApiVersions.V1)]
     [Route("api/v{version:apiVersion}/clients")]
-    [Authorize]
+    //[Authorize]
     public class ClientsController : ControllerBase
     {
         private readonly ICommandHandler<CreateClientCommand, CreateClientResponse> _createHandler;

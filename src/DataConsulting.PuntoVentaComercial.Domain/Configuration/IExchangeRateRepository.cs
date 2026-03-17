@@ -1,5 +1,3 @@
-using DataConsulting.PuntoVentaComercial.Domain.Enums;
-
 namespace DataConsulting.PuntoVentaComercial.Domain.Configuration
 {
     public interface IExchangeRateRepository

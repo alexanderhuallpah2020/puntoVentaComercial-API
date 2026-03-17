@@ -1,7 +1,6 @@
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
 using DataConsulting.PuntoVentaComercial.Domain.Abstractions;
 using DataConsulting.PuntoVentaComercial.Domain.Configuration;
-using DataConsulting.PuntoVentaComercial.Domain.Enums;
 
 namespace DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetDocumentSeries
 {

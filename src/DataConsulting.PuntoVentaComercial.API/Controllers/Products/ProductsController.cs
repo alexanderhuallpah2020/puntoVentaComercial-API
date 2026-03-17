@@ -2,10 +2,9 @@ using Asp.Versioning;
 using DataConsulting.PuntoVentaComercial.API.Utils;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
 using DataConsulting.PuntoVentaComercial.Application.Features.Products.Queries.GetPriceList;
-using DataConsulting.PuntoVentaComercial.Application.Features.Products.Queries.GetTopSellers;
 using DataConsulting.PuntoVentaComercial.Application.Features.Products.Queries.GetProductDetail;
 using DataConsulting.PuntoVentaComercial.Application.Features.Products.Queries.GetProductStock;
-using Microsoft.AspNetCore.Authorization;
+using DataConsulting.PuntoVentaComercial.Application.Features.Products.Queries.GetTopSellers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataConsulting.PuntoVentaComercial.API.Controllers.Products
@@ -13,7 +12,7 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Products
     [ApiController]
     [ApiVersion(ApiVersions.V1)]
     [Route("api/v{version:apiVersion}/products")]
-    [Authorize]
+    //[Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IQueryHandler<GetPriceListQuery, GetPriceListResponse> _priceListHandler;

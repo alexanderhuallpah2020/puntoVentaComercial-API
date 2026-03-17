@@ -1,13 +1,10 @@
 ﻿using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
 using DataConsulting.PuntoVentaComercial.Domain.Cash;
-using DataConsulting.PuntoVentaComercial.Domain.Sunat;
-using DataConsulting.PuntoVentaComercial.Domain.ClasesSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Clients;
-using DataConsulting.PuntoVentaComercial.Domain.FamiliasSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Orders;
 using DataConsulting.PuntoVentaComercial.Domain.Payments;
 using DataConsulting.PuntoVentaComercial.Domain.Sales;
-using DataConsulting.PuntoVentaComercial.Domain.SegmentosSunat;
+using DataConsulting.PuntoVentaComercial.Domain.Sunat;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data.Common;
@@ -21,9 +18,6 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext, IUn
     {
     }
 
-    public DbSet<SegmentoSunat> SegmentosSunat { get; set; }
-    public DbSet<FamiliaSunat> FamiliasSunat { get; set; }
-    public DbSet<ClaseSunat> ClasesSunat { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<ClientLocal> ClientLocals { get; set; }
     public DbSet<Sale> Sales { get; set; }

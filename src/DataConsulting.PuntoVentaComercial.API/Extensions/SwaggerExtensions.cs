@@ -10,9 +10,9 @@ namespace DataConsulting.PuntoVentaComercial.API.Extensions
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "eFactura API",
+                    Title = "PuntoVentaComercial API",
                     Version = "v1",
-                    Description = "eFactura API built using clean architecture."
+                    Description = "PuntoVentaComercial API built using clean architecture."
                 });
 
                 options.CustomSchemaIds(t => t.FullName?.Replace("+", "."));

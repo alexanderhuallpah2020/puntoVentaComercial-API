@@ -1,5 +1,4 @@
 using DataConsulting.PuntoVentaComercial.Domain.Configuration;
-using DataConsulting.PuntoVentaComercial.Domain.Enums;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 

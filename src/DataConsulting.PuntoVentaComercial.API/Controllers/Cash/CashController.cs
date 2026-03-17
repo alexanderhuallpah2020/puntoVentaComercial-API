@@ -6,7 +6,6 @@ using DataConsulting.PuntoVentaComercial.Application.Features.Cash.Commands.Crea
 using DataConsulting.PuntoVentaComercial.Application.Features.Cash.Queries.GetAvailableCash;
 using DataConsulting.PuntoVentaComercial.Application.Features.Cash.Queries.GetVaultDeposits;
 using DataConsulting.PuntoVentaComercial.Domain.Enums;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataConsulting.PuntoVentaComercial.API.Controllers.Cash
@@ -14,7 +13,7 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Cash
     [ApiController]
     [ApiVersion(ApiVersions.V1)]
     [Route("api/v{version:apiVersion}/vault")]
-    [Authorize]
+    //[Authorize]
     public class CashController : ControllerBase
     {
         private readonly ICommandHandler<CreateVaultDepositCommand, CreateVaultDepositResponse> _createHandler;

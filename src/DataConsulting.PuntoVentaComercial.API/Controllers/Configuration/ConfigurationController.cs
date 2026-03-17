@@ -1,19 +1,18 @@
 using Asp.Versioning;
 using DataConsulting.PuntoVentaComercial.API.Utils;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
-using DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetExchangeRates;
-using DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetCurrencies;
-using DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetShifts;
-using DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetSellers;
 using DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetConstants;
-using Microsoft.AspNetCore.Authorization;
+using DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetCurrencies;
+using DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetExchangeRates;
+using DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetSellers;
+using DataConsulting.PuntoVentaComercial.Application.Features.Configuration.Queries.GetShifts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataConsulting.PuntoVentaComercial.API.Controllers.Configuration
 {
     [ApiController]
     [ApiVersion(ApiVersions.V1)]
-    [Authorize]
+    //[Authorize]
     public class ConfigurationController : ControllerBase
     {
         private readonly IQueryHandler<GetExchangeRatesQuery, GetExchangeRatesResponse> _exchangeRatesHandler;
