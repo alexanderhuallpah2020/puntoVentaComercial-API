@@ -2,6 +2,8 @@
 using DataConsulting.PuntoVentaComercial.Domain.ClasesSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Clients;
 using DataConsulting.PuntoVentaComercial.Domain.FamiliasSunat;
+using DataConsulting.PuntoVentaComercial.Domain.Payments;
+using DataConsulting.PuntoVentaComercial.Domain.Sales;
 using DataConsulting.PuntoVentaComercial.Domain.SegmentosSunat;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -21,6 +23,10 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext, IUn
     public DbSet<ClaseSunat> ClasesSunat { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<ClientLocal> ClientLocals { get; set; }
+    public DbSet<Sale> Sales { get; set; }
+    public DbSet<SaleItem> SaleItems { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<PaymentDetail> PaymentDetails { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

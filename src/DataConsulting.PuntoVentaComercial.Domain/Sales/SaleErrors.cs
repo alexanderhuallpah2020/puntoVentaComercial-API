@@ -16,6 +16,15 @@ namespace DataConsulting.PuntoVentaComercial.Domain.Sales
         public static readonly Error PrecioInvalido =
             Error.Failure("Venta.PrecioInvalido", "El precio unitario no puede ser negativo.");
 
+        public static readonly Error SerieRequerida =
+            Error.Failure("Venta.SerieRequerida", "Debe especificar la serie del documento.");
+
+        public static readonly Error CorrelativoInvalido =
+            Error.Failure("Venta.CorrelativoInvalido", "El correlativo del documento no es válido.");
+
+        public static readonly Error SerieNoEncontrada =
+            Error.NotFound("Venta.SerieNoEncontrada", "No se encontró la serie de documento especificada.");
+
         public static Error ItemIscSinTasa(int index) =>
             Error.Failure("Venta.ItemIscSinTasa", $"El ítem {index + 1} tiene ISC pero no especifica tasa ni monto fijo.");
 

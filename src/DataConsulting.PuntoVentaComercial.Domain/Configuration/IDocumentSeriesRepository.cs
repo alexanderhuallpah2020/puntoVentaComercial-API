@@ -16,5 +16,16 @@ namespace DataConsulting.PuntoVentaComercial.Domain.Configuration
             EDocumento tipoDocumento,
             string numSerie,
             CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Incrementa atómicamente el correlativo y retorna el nuevo valor.
+        /// Debe ejecutarse dentro de una transacción de base de datos.
+        /// </summary>
+        Task<long> IncrementAndGetCorrelativeAsync(
+            int idEmpresa,
+            int idSucursal,
+            EDocumento tipoDocumento,
+            string numSerie,
+            CancellationToken cancellationToken = default);
     }
 }

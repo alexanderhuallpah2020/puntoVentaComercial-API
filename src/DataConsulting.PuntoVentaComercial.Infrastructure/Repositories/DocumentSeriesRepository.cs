@@ -54,5 +54,38 @@ namespace DataConsulting.PuntoVentaComercial.Infrastructure.Repositories
                 NumSerie = numSerie
             });
         }
+
+        public async Task<long> IncrementAndGetCorrelativeAsync(
+            int idEmpresa,
+            int idSucursal,
+            EDocumento tipoDocumento,
+            string numSerie,
+            CancellationToken cancellationToken = default)
+        {
+            // UPDATE atómico: incrementa y retorna el nuevo correlativo.
+            // Si hay concurrencia, el UPDATE serializa las peticiones a nivel de fila.
+            var sql = """
+                UPDATE DocumentoSerie
+                SET UltimoCorrelativo = UltimoCorrelativo + 1
+                OUTPUT INSERTED.UltimoCorrelativo
+                WHERE IdEmpresa        = @IdEmpresa
+                  AND IdSucursal       = @IdSucursal
+                  AND IdTipoDocumento  = @TipoDocumento
+                  AND NumSerie         = @NumSerie
+                  AND Estado           = 1
+                """;
+
+            await using var connection = await connectionFactory.OpenConnectionAsync();
+
+            var newCorrelativo = await connection.ExecuteScalarAsync<long?>(sql, new
+            {
+                IdEmpresa = idEmpresa,
+                IdSucursal = idSucursal,
+                TipoDocumento = (int)tipoDocumento,
+                NumSerie = numSerie
+            });
+
+            return newCorrelativo ?? 0;
+        }
     }
 }
