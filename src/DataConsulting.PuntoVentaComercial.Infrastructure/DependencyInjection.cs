@@ -49,6 +49,7 @@ namespace DataConsulting.PuntoVentaComercial.Infrastructure
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<ISunatClientLookupService, SunatClientLookupService>();
+            services.AddScoped<ISunatService, SunatService>();
             services.AddScoped<IPrintService, PdfPrintService>();
         }
 
