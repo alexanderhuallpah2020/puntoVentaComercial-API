@@ -2,6 +2,7 @@
 using DataConsulting.PuntoVentaComercial.Domain.ClasesSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Clients;
 using DataConsulting.PuntoVentaComercial.Domain.FamiliasSunat;
+using DataConsulting.PuntoVentaComercial.Domain.Orders;
 using DataConsulting.PuntoVentaComercial.Domain.Payments;
 using DataConsulting.PuntoVentaComercial.Domain.Sales;
 using DataConsulting.PuntoVentaComercial.Domain.SegmentosSunat;
@@ -27,6 +28,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext, IUn
     public DbSet<SaleItem> SaleItems { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<PaymentDetail> PaymentDetails { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
