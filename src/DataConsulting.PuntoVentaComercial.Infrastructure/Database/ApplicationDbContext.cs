@@ -1,4 +1,5 @@
 ﻿using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
+using DataConsulting.PuntoVentaComercial.Domain.Cash;
 using DataConsulting.PuntoVentaComercial.Domain.ClasesSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Clients;
 using DataConsulting.PuntoVentaComercial.Domain.FamiliasSunat;
@@ -30,6 +31,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext, IUn
     public DbSet<PaymentDetail> PaymentDetails { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<VaultDeposit> VaultDeposits { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,4 +1,5 @@
-﻿using DataConsulting.PuntoVentaComercial.Domain.ClasesSunat;
+﻿using DataConsulting.PuntoVentaComercial.Domain.Cash;
+using DataConsulting.PuntoVentaComercial.Domain.ClasesSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Clients;
 using DataConsulting.PuntoVentaComercial.Domain.FamiliasSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Orders;
@@ -22,5 +23,6 @@ namespace DataConsulting.PuntoVentaComercial.Application.Abstractions.Data
         DbSet<PaymentDetail> PaymentDetails { get; }
         DbSet<Order> Orders { get; }
         DbSet<OrderItem> OrderItems { get; }
+        DbSet<VaultDeposit> VaultDeposits { get; }
     }
 }
