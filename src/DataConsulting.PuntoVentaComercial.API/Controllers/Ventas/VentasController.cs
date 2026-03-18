@@ -53,6 +53,7 @@ public sealed class VentasController(
             request.RedondeoTotal,
             request.IdFormaPago,
             request.FlagDescPorcentaje,
+            request.IdSubdiario,
             request.Detalles.Select(d => new CreateVentaDetalleDto(
                 d.IdArticulo, d.IdUnidad, d.DescripcionArticulo, d.Cantidad,
                 d.PrecioUnitario, d.ImporteDescuento, d.TipoDescuento, d.FlagExonerado,

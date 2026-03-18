@@ -30,6 +30,7 @@ public sealed record CreateVentaRequest(
     decimal RedondeoTotal,
     short IdFormaPago,
     short FlagDescPorcentaje,
+    short? IdSubdiario,
     IList<CreateVentaDetalleItemRequest> Detalles,
     IList<CreateVentaPagoItemRequest> Pagos);
 

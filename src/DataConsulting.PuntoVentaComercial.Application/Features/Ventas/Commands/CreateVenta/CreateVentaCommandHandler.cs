@@ -22,6 +22,15 @@ internal sealed class CreateVentaCommandHandler(
         int nextNumero = await ventaRepository.GetNextNumeroDocumentoAsync(
             request.IdSucursal, request.IdTipoDocumento, request.NumSerieA, cancellationToken);
 
+        // NroCorrelativo contable: solo cuando hay subdiario asignado (política 6074)
+        int nroCorrelativo = 0;
+        if (request.IdSubdiario is > 0)
+        {
+            int maxCorrelativo = await ventaRepository.GetNroCorrelativoVentaAsync(
+                DateTime.Now, request.IdSubdiario.Value, cancellationToken);
+            nroCorrelativo = maxCorrelativo + 1;
+        }
+
         short correlativo = 1;
         var detalles = request.Detalles
             .Select(d => VentaDetalle.Create(
@@ -54,6 +63,7 @@ internal sealed class CreateVentaCommandHandler(
             request.NumSerie,
             request.NumSerieA,
             nextNumero,
+            nroCorrelativo,
             request.IdCliente,
             request.IdTipoCliente,
             request.IdVendedor,
@@ -76,6 +86,7 @@ internal sealed class CreateVentaCommandHandler(
             request.RedondeoTotal,
             request.IdFormaPago,
             request.FlagDescPorcentaje,
+            request.IdSubdiario,
             detalles,
             pagos,
             usuarioCreador: "SISTEMA");

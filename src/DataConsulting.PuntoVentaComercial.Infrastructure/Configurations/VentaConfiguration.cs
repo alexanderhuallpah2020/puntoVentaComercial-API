@@ -19,8 +19,9 @@ public sealed class VentaConfiguration : IEntityTypeConfiguration<Venta>
         builder.Property(x => x.IdSubSede).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.IdTipoDocumento).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.NumSerie).HasColumnType("smallint");
-        builder.Property(x => x.NumSerieA).HasMaxLength(5);             // VARCHAR(5) NULL
-        builder.Property(x => x.NumeroDocumento).HasColumnType("int");
+        builder.Property(x => x.NumSerieA).HasMaxLength(5);              // VARCHAR(5)  NULL
+        builder.Property(x => x.NumeroDocumento).HasColumnType("int");   // INT         NULL — series numéricas
+        builder.Property(x => x.NumeroDocumentoA).HasMaxLength(20);      // VARCHAR(20) NULL — series alfanuméricas
         builder.Property(x => x.NroCorrelativo).HasColumnType("int");
 
         builder.Property(x => x.IdCliente).IsRequired();

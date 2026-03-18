@@ -58,6 +58,16 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
         return (items, total);
     }
 
+    public async Task<int> GetNroCorrelativoVentaAsync(
+        DateTime fechaEmision, short idSubdiario, CancellationToken ct)
+    {
+        // SP devuelve MAX(NroCorrelativo) del mes/año/subdiario; el handler suma +1
+        var result = await DbContext.Database
+            .SqlQuery<int>($"EXEC dbo.GetNroCorrelativoVenta {fechaEmision}, {idSubdiario}")
+            .ToListAsync(ct);
+        return result.FirstOrDefault();
+    }
+
     public async Task<int> GetNextNumeroDocumentoAsync(
         short idSucursal, short idTipoDocumento, string numSerieA, CancellationToken ct)
     {

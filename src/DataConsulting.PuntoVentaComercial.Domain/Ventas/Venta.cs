@@ -10,8 +10,9 @@ public sealed class Venta : Entity
     public short IdSubSede { get; private set; }
     public short IdTipoDocumento { get; private set; }
     public short? NumSerie { get; private set; }
-    public string? NumSerieA { get; private set; }   // serie alfanumérica ej. 'F001', 'B001'
-    public int? NumeroDocumento { get; private set; }
+    public string? NumSerieA { get; private set; }        // VARCHAR(5)  — serie alfanumérica ej. 'F001'
+    public int? NumeroDocumento { get; private set; }     // INT NULL    — para series numéricas
+    public string? NumeroDocumentoA { get; private set; } // VARCHAR(20) — para series alfanuméricas ej. '000001'
     public int NroCorrelativo { get; private set; }
     public int IdCliente { get; private set; }
     public short? IdTipoCliente { get; private set; }
@@ -65,6 +66,7 @@ public sealed class Venta : Entity
         short? numSerie,
         string? numSerieA,
         int? numeroDocumento,
+        int nroCorrelativo,
         int idCliente,
         short? idTipoCliente,
         short vendedor,
@@ -87,6 +89,7 @@ public sealed class Venta : Entity
         decimal redondeoTotal,
         short idFormaPago,
         short flagDescPorcentaje,
+        short? idSubdiario,
         IList<VentaDetalle> detalles,
         IList<VentaPago> pagos,
         string usuarioCreador)
@@ -106,8 +109,11 @@ public sealed class Venta : Entity
             IdTipoDocumento            = idTipoDocumento,
             NumSerie                   = numSerie,
             NumSerieA                  = numSerieA,
-            NumeroDocumento            = numeroDocumento,
-            NroCorrelativo             = numeroDocumento ?? 0,
+            // Series numéricas (NumSerie != null) → NumeroDocumento (INT)
+            // Series alfanuméricas (NumSerieA)    → NumeroDocumentoA (VARCHAR, formato D6)
+            NumeroDocumento            = numSerie.HasValue ? numeroDocumento : null,
+            NumeroDocumentoA           = numSerie.HasValue ? null : numeroDocumento?.ToString("D6"),
+            NroCorrelativo             = nroCorrelativo,
             IdCliente                  = idCliente,
             IdTipoCliente              = idTipoCliente ?? 0,
             Vendedor                   = vendedor,
@@ -131,6 +137,7 @@ public sealed class Venta : Entity
             ImporteVuelto              = importeVuelto,
             RedondeoTotal              = redondeoTotal,
             IdFormaPago                = idFormaPago,
+            IdSubdiario                = idSubdiario,
             IdTurnoAsistencia          = idTurnoAsistencia,
             IdTipoVenta                = 3,
             FlagDescPorcentaje         = flagDescPorcentaje,

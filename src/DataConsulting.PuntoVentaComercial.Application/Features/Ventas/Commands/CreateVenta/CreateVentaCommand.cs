@@ -32,6 +32,7 @@ public sealed record CreateVentaCommand(
     decimal RedondeoTotal,
     short IdFormaPago,
     short FlagDescPorcentaje,
+    short? IdSubdiario,
     IList<CreateVentaDetalleDto> Detalles,
     IList<CreateVentaPagoDto> Pagos) : ICommand<int>;
 

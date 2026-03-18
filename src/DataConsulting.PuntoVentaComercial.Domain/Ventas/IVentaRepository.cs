@@ -16,5 +16,8 @@ public interface IVentaRepository
         CancellationToken ct);
     Task<int> GetNextNumeroDocumentoAsync(
         short idSucursal, short idTipoDocumento, string numSerieA, CancellationToken ct);
+    // Correlativo contable mensual — solo cuando IdSubdiario > 0
+    Task<int> GetNroCorrelativoVentaAsync(
+        DateTime fechaEmision, short idSubdiario, CancellationToken ct);
     void Add(Venta venta);
 }
