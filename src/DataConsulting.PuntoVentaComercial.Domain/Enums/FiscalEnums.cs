@@ -6,6 +6,9 @@
         GuiaRemision = 6,
         GuiaRemisionTransportista = 7,
         OrdenCompra = 27,
+        GuiaInternaIngreso = 28,
+        Pedido = 29,
+        GuiaInternaSalida = 30,  // Parte de Salida — usado en MovimientoAlmacen de venta
         Factura = 9,
         Boleta = 10,
         NotaCredito = 15,

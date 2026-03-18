@@ -49,7 +49,8 @@ public sealed record CreateVentaDetalleDto(
     byte FlagRegalo,
     int IdTipoAfectoIGV,
     decimal Isc,
-    decimal ValorICBPER);
+    decimal ValorICBPER,
+    int IdLocacion);
 
 public sealed record CreateVentaPagoDto(
     short IdFormaPago,

@@ -57,7 +57,7 @@ public sealed class VentasController(
             request.Detalles.Select(d => new CreateVentaDetalleDto(
                 d.IdArticulo, d.IdUnidad, d.DescripcionArticulo, d.Cantidad,
                 d.PrecioUnitario, d.ImporteDescuento, d.TipoDescuento, d.FlagExonerado,
-                d.FlagRegalo, d.IdTipoAfectoIGV, d.Isc, d.ValorICBPER)).ToList(),
+                d.FlagRegalo, d.IdTipoAfectoIGV, d.Isc, d.ValorICBPER, d.IdLocacion)).ToList(),
             request.Pagos.Select(p => new CreateVentaPagoDto(
                 p.IdFormaPago, p.IdTipoMoneda, p.Importe)).ToList(),
             request.Cuotas.Select(c => new CreateVentaCuotaDto(

@@ -1,5 +1,6 @@
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
+using DataConsulting.PuntoVentaComercial.Application.Abstractions.Services;
 using DataConsulting.PuntoVentaComercial.Domain.Abstractions;
 using DataConsulting.PuntoVentaComercial.Domain.Clientes;
 using DataConsulting.PuntoVentaComercial.Domain.Ventas;
@@ -9,7 +10,8 @@ namespace DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Command
 internal sealed class CreateVentaCommandHandler(
     IVentaRepository ventaRepository,
     IClienteRepository clienteRepository,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    IStockMovementService stockMovementService)
     : ICommandHandler<CreateVentaCommand, int>
 {
     public async Task<Result<int>> Handle(
@@ -106,6 +108,17 @@ internal sealed class CreateVentaCommandHandler(
 
         ventaRepository.Add(result.Value);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await stockMovementService.DescuentoStockVentaAsync(
+            request.IdEmpresa,
+            request.IdSucursal,
+            result.Value.Id,
+            request.IdCliente,
+            request.IdVendedor,
+            request.IdTipoMoneda,
+            request.ImporteTotal,
+            request.Detalles,
+            cancellationToken);
 
         return Result.Success(result.Value.Id);
     }

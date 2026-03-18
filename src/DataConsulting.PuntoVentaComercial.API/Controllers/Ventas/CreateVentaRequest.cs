@@ -47,7 +47,8 @@ public sealed record CreateVentaDetalleItemRequest(
     byte FlagRegalo,
     int IdTipoAfectoIGV,
     decimal Isc,
-    decimal ValorICBPER);
+    decimal ValorICBPER,
+    int IdLocacion);
 
 public sealed record CreateVentaPagoItemRequest(
     short IdFormaPago,

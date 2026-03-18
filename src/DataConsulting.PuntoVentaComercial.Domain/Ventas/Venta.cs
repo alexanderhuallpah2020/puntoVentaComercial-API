@@ -119,7 +119,7 @@ public sealed class Venta : Entity
             NumeroDocumentoA           = numSerie.HasValue ? null : numeroDocumento?.ToString("D6"),
             NroCorrelativo             = nroCorrelativo,
             IdCliente                  = idCliente,
-            IdTipoCliente              = idTipoCliente ?? 0,
+            IdTipoCliente              = idTipoCliente ?? 1, // 1 = Clientes Generales (default POS)
             Vendedor                   = vendedor,
             Vendedor2                  = vendedor2,
             FechaEmision               = DateTime.Now,

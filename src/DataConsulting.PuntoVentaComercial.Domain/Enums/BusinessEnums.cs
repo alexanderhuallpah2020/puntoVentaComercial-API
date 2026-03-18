@@ -66,6 +66,67 @@
         Femenino = 2
     }
 
+    /// <summary>
+    /// Catálogo de tipos de transferencia de almacén (tabla TipoTransferenciaAlm).
+    /// Tipo 'S' = Salida, Tipo 'I' = Ingreso.
+    /// </summary>
+    public enum ETipoTransferencia : int
+    {
+        Compra                       = 1011,
+        CompraDevolucion             = 1012,
+        CompraZofra                  = 1013,
+        CompraSalida                 = 1014,
+        Importacion                  = 1021,
+        TercerosIngreso              = 1031,
+        TercerosSalida               = 1032,
+        VentaDevolucion              = 1111,
+        VentaConfirmar               = 1102,
+        Venta                        = 1112,  // Tipo='S', TipoOpera=1, FlagMovimiento=2
+        VentaZofra                   = 1113,
+        Exportacion                  = 1122,
+        VentaDevolucionLibre         = 1151,
+        UsoDevolucion                = 1131,
+        Uso                          = 1132,
+        Muestra                      = 1142,
+        MuestraDevolucion            = 1141,
+        ProduccionIngreso            = 1211,
+        Produccion                   = 1232,
+        ProduccionDevolucion         = 1231,
+        DiferenciaIngreso            = 1241,
+        DiferenciaSalida             = 1242,
+        InventarioIngreso            = 1271,
+        InventarioSalida             = 1272,
+        RecepcionInterna             = 1291,
+        TransferenciaInterna         = 1292,
+        Recepcion                    = 2121,
+        Transferencia                = 2122,
+        PrestamoDevolucion           = 2131,
+        Prestamo                     = 2132,
+        ServicioTercerosIngreso      = 2151,
+        ServicioTercerosSalida       = 2152,
+        ConsignacionDevolucion       = 2161,
+        Recuperacion                 = 2171,
+        Deterioro                    = 2172,
+        MermaIngreso                 = 2175,
+        MermaSalida                  = 2176,
+        ExcesoIngreso                = 2177,
+        ExcesoSalida                 = 2178,
+        TrasladoEnvases              = 2181,
+        TrasladoBienes               = 4013,
+        Otros                        = 3222,
+        Consignacion                 = 3223,
+    }
+
+    /// <summary>
+    /// Tipo de proceso origen/destino en GuiaRemision (tabla TipoProceso, campo TipoProceso/TipoProceso2).
+    /// Valores confirmados desde comentarios en SPs de la BD.
+    /// </summary>
+    public enum ETipoProceso : byte
+    {
+        Venta           = 5,   // Confirmado: grr.TipoProceso = 5 --Venta
+        OrdenTrabajo    = 113, // Confirmado: @TipoProceso = 113 -- Orden de Trabajo
+    }
+
     // SUNAT Catálogo 07 — Tipo de afectación al IGV
     public enum ETipoAfectacionIGV : int
     {
