@@ -34,7 +34,8 @@ public sealed record CreateVentaCommand(
     short FlagDescPorcentaje,
     short? IdSubdiario,
     IList<CreateVentaDetalleDto> Detalles,
-    IList<CreateVentaPagoDto> Pagos) : ICommand<int>;
+    IList<CreateVentaPagoDto> Pagos,
+    IList<CreateVentaCuotaDto> Cuotas) : ICommand<int>;
 
 public sealed record CreateVentaDetalleDto(
     int IdArticulo,
@@ -54,3 +55,7 @@ public sealed record CreateVentaPagoDto(
     short IdFormaPago,
     short IdTipoMoneda,
     decimal Importe);
+
+public sealed record CreateVentaCuotaDto(
+    DateTime? FechaCuota,
+    decimal? Monto);

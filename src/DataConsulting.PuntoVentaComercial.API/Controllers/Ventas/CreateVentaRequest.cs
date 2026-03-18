@@ -32,7 +32,8 @@ public sealed record CreateVentaRequest(
     short FlagDescPorcentaje,
     short? IdSubdiario,
     IList<CreateVentaDetalleItemRequest> Detalles,
-    IList<CreateVentaPagoItemRequest> Pagos);
+    IList<CreateVentaPagoItemRequest> Pagos,
+    IList<CreateVentaCuotaItemRequest> Cuotas);
 
 public sealed record CreateVentaDetalleItemRequest(
     int IdArticulo,
@@ -52,3 +53,7 @@ public sealed record CreateVentaPagoItemRequest(
     short IdFormaPago,
     short IdTipoMoneda,
     decimal Importe);
+
+public sealed record CreateVentaCuotaItemRequest(
+    DateTime? FechaCuota,
+    decimal? Monto);

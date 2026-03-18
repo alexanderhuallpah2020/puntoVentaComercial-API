@@ -91,5 +91,10 @@ public sealed class VentaConfiguration : IEntityTypeConfiguration<Venta>
                .WithOne()
                .HasForeignKey(x => x.IdVenta)
                .IsRequired();
+
+        builder.HasMany(x => x.Cuotas)
+               .WithOne()
+               .HasForeignKey(x => x.IdVenta)
+               .IsRequired();
     }
 }

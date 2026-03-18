@@ -59,7 +59,9 @@ public sealed class VentasController(
                 d.PrecioUnitario, d.ImporteDescuento, d.TipoDescuento, d.FlagExonerado,
                 d.FlagRegalo, d.IdTipoAfectoIGV, d.Isc, d.ValorICBPER)).ToList(),
             request.Pagos.Select(p => new CreateVentaPagoDto(
-                p.IdFormaPago, p.IdTipoMoneda, p.Importe)).ToList());
+                p.IdFormaPago, p.IdTipoMoneda, p.Importe)).ToList(),
+            request.Cuotas.Select(c => new CreateVentaCuotaDto(
+                c.FechaCuota, c.Monto)).ToList());
 
         var result = await createHandler.Handle(command, ct);
         return result.IsSuccess

@@ -29,6 +29,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext, IUn
     public DbSet<Venta>                Ventas               { get; set; }
     public DbSet<VentaDetalle>         VentaDetalles        { get; set; }
     public DbSet<VentaPago>            VentaPagos           { get; set; }
+    public DbSet<VentaCuota>           VentaCuotas          { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

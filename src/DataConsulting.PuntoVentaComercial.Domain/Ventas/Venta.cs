@@ -55,6 +55,9 @@ public sealed class Venta : Entity
     private readonly List<VentaPago> _pagos = [];
     public IReadOnlyCollection<VentaPago> Pagos => _pagos.AsReadOnly();
 
+    private readonly List<VentaCuota> _cuotas = [];
+    public IReadOnlyCollection<VentaCuota> Cuotas => _cuotas.AsReadOnly();
+
     private Venta() { }
 
     public static Result<Venta> Create(
@@ -92,6 +95,7 @@ public sealed class Venta : Entity
         short? idSubdiario,
         IList<VentaDetalle> detalles,
         IList<VentaPago> pagos,
+        IList<VentaCuota> cuotas,
         string usuarioCreador)
     {
         if (detalles.Count == 0)
@@ -153,6 +157,9 @@ public sealed class Venta : Entity
 
         foreach (var pago in pagos)
             venta._pagos.Add(pago);
+
+        foreach (var cuota in cuotas)
+            venta._cuotas.Add(cuota);
 
         return Result.Success(venta);
     }

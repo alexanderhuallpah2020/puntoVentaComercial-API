@@ -54,6 +54,15 @@ internal sealed class CreateVentaCommandHandler(
             .Select(p => VentaPago.Create(p.IdFormaPago, p.IdTipoMoneda, p.Importe))
             .ToList();
 
+        short cuotaCorrelativo = 1;
+        var cuotas = request.Cuotas
+            .Select(c => VentaCuota.Create(
+                cuotaCorrelativo++,
+                c.FechaCuota,
+                c.Monto,
+                $"Cuota{cuotaCorrelativo:D3}"))
+            .ToList();
+
         var result = Venta.Create(
             request.IdEmpresa,
             request.IdSucursal,
@@ -89,6 +98,7 @@ internal sealed class CreateVentaCommandHandler(
             request.IdSubdiario,
             detalles,
             pagos,
+            cuotas,
             usuarioCreador: "SISTEMA");
 
         if (result.IsFailure)
