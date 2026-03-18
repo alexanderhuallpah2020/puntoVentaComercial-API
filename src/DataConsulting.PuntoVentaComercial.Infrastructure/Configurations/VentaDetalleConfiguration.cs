@@ -14,6 +14,7 @@ public sealed class VentaDetalleConfiguration : IEntityTypeConfiguration<VentaDe
 
         builder.Property(x => x.IdVenta).IsRequired();
         builder.Property(x => x.Correlativo).HasColumnType("smallint").IsRequired();
+        builder.Property(x => x.IdEmpresa).HasColumnType("smallint").IsRequired();
 
         builder.Property(x => x.IdArticulo);                                              // INT NULL
         builder.Property(x => x.IdUnidad).HasColumnType("smallint");                      // SMALLINT NULL
@@ -46,6 +47,7 @@ public sealed class VentaDetalleConfiguration : IEntityTypeConfiguration<VentaDe
         builder.Property<decimal?>("MontoPercepcion").HasColumnType("money");                   // MONEY NULL
         builder.Property<byte>("FlagPagoAdelantadoDet").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
         builder.Property<byte>("FlagDetalle").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
+        builder.Property<byte>("TipoRegalo").HasColumnType("tinyint").HasDefaultValue((byte)0).ValueGeneratedNever();
         builder.Property<bool>("FlagICBPER").HasColumnType("bit").HasDefaultValue(false);       // BD tiene DEFAULT((0)): EF puede omitirlo
     }
 }

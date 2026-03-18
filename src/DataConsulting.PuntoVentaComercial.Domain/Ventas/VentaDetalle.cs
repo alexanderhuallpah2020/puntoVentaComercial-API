@@ -4,6 +4,7 @@ public sealed class VentaDetalle
 {
     public int IdVenta { get; private set; }
     public short Correlativo { get; private set; }
+    public short IdEmpresa { get; private set; }
     public int? IdArticulo { get; private set; }
     public short? IdUnidad { get; private set; }
     public string? DescripcionArticulo { get; private set; }
@@ -27,6 +28,7 @@ public sealed class VentaDetalle
 
     public static VentaDetalle Create(
         short correlativo,
+        short idEmpresa,
         int idArticulo,
         short idUnidad,
         string? descripcionArticulo,
@@ -46,6 +48,7 @@ public sealed class VentaDetalle
         return new VentaDetalle
         {
             Correlativo          = correlativo,
+            IdEmpresa            = idEmpresa,
             IdArticulo           = idArticulo,
             IdUnidad             = idUnidad,
             DescripcionArticulo  = descripcionArticulo,

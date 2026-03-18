@@ -26,6 +26,7 @@ internal sealed class CreateVentaCommandHandler(
         var detalles = request.Detalles
             .Select(d => VentaDetalle.Create(
                 correlativo++,
+                request.IdEmpresa,
                 d.IdArticulo,
                 d.IdUnidad,
                 d.DescripcionArticulo,
