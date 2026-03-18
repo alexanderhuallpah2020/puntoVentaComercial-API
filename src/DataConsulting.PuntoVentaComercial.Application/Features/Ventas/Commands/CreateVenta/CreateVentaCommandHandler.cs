@@ -108,27 +108,39 @@ internal sealed class CreateVentaCommandHandler(
         if (result.IsFailure)
             return Result.Failure<int>(result.Error);
 
-        ventaRepository.Add(result.Value);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        // FlagVentaConStock = !HabilitarVentaSinStock — si el usuario NO tiene la política, la venta requiere stock
+        // Lectura pura antes de abrir la transacción — PoliticService usa ADO.NET directo
+        // sobre la misma conexión; ejecutarlo dentro de una transacción activa requeriría
+        // enlazar el comando a ella, acoplando innecesariamente el servicio a la transacción.
         bool habilitarSinStock = await politicService.HasPoliticAsync(
             "admin", EPolitica.HabilitarVentaSinStock, cancellationToken);
 
-        if (!habilitarSinStock)
+        await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+        try
         {
-            await stockMovementService.DescuentoStockVentaAsync(
-                request.IdEmpresa,
-                request.IdSucursal,
-                result.Value.Id,
-                request.IdCliente,
-                request.IdVendedor,
-                request.IdTipoMoneda,
-                request.ImporteTotal,
-                request.Detalles,
-                cancellationToken);
-        }
+            ventaRepository.Add(result.Value);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(result.Value.Id);
+            if (!habilitarSinStock)
+            {
+                await stockMovementService.DescuentoStockVentaAsync(
+                    request.IdEmpresa,
+                    request.IdSucursal,
+                    result.Value.Id,
+                    request.IdCliente,
+                    request.IdVendedor,
+                    request.IdTipoMoneda,
+                    request.ImporteTotal,
+                    request.Detalles,
+                    cancellationToken);
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+            return Result.Success(result.Value.Id);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 }
