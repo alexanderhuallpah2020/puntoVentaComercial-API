@@ -45,6 +45,7 @@ namespace DataConsulting.PuntoVentaComercial.Infrastructure
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<ISunatClientLookupService, SunatClientLookupStub>();
             services.AddScoped<IStockMovementService, StockMovementService>();
+            services.AddScoped<IPoliticService, PoliticService>();
         }
 
         private static void AddApiVersioning(IServiceCollection services)

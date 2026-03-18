@@ -17,7 +17,7 @@ internal sealed class AnularVentaCommandHandler(
         if (venta is null)
             return Result.Failure<bool>(VentaErrors.NotFound(request.IdVenta));
 
-        var result = venta.Anular("SISTEMA");
+        var result = venta.Anular("admin");
         if (result.IsFailure)
             return Result.Failure<bool>(result.Error);
 

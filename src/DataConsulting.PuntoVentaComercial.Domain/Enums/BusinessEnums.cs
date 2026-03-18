@@ -70,6 +70,15 @@
     /// Catálogo de tipos de transferencia de almacén (tabla TipoTransferenciaAlm).
     /// Tipo 'S' = Salida, Tipo 'I' = Ingreso.
     /// </summary>
+    /// <summary>
+    /// Subconjunto de políticas de seguridad relevantes para el flujo de ventas.
+    /// Valores completos en Security.Politic (BD).
+    /// </summary>
+    public enum EPolitica : int
+    {
+        HabilitarVentaSinStock = 7400,  // FlagVentaConStock = !HasPolitic — controla si se genera movimiento de almacén
+    }
+
     public enum ETipoTransferencia : int
     {
         Compra                       = 1011,

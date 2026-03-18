@@ -3,6 +3,7 @@ using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Services;
 using DataConsulting.PuntoVentaComercial.Domain.Abstractions;
 using DataConsulting.PuntoVentaComercial.Domain.Clientes;
+using DataConsulting.PuntoVentaComercial.Domain.Enums;
 using DataConsulting.PuntoVentaComercial.Domain.Ventas;
 
 namespace DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Commands.CreateVenta;
@@ -11,7 +12,8 @@ internal sealed class CreateVentaCommandHandler(
     IVentaRepository ventaRepository,
     IClienteRepository clienteRepository,
     IUnitOfWork unitOfWork,
-    IStockMovementService stockMovementService)
+    IStockMovementService stockMovementService,
+    IPoliticService politicService)
     : ICommandHandler<CreateVentaCommand, int>
 {
     public async Task<Result<int>> Handle(
@@ -101,7 +103,7 @@ internal sealed class CreateVentaCommandHandler(
             detalles,
             pagos,
             cuotas,
-            usuarioCreador: "SISTEMA");
+            usuarioCreador: "admin");
 
         if (result.IsFailure)
             return Result.Failure<int>(result.Error);
@@ -109,16 +111,23 @@ internal sealed class CreateVentaCommandHandler(
         ventaRepository.Add(result.Value);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        await stockMovementService.DescuentoStockVentaAsync(
-            request.IdEmpresa,
-            request.IdSucursal,
-            result.Value.Id,
-            request.IdCliente,
-            request.IdVendedor,
-            request.IdTipoMoneda,
-            request.ImporteTotal,
-            request.Detalles,
-            cancellationToken);
+        // FlagVentaConStock = !HabilitarVentaSinStock — si el usuario NO tiene la política, la venta requiere stock
+        bool habilitarSinStock = await politicService.HasPoliticAsync(
+            "admin", EPolitica.HabilitarVentaSinStock, cancellationToken);
+
+        if (!habilitarSinStock)
+        {
+            await stockMovementService.DescuentoStockVentaAsync(
+                request.IdEmpresa,
+                request.IdSucursal,
+                result.Value.Id,
+                request.IdCliente,
+                request.IdVendedor,
+                request.IdTipoMoneda,
+                request.ImporteTotal,
+                request.Detalles,
+                cancellationToken);
+        }
 
         return Result.Success(result.Value.Id);
     }

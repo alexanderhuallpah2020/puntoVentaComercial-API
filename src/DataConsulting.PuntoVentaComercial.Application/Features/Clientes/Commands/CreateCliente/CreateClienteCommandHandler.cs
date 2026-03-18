@@ -51,7 +51,7 @@ internal sealed class CreateClienteCommandHandler(
             request.IdSucursal,
             idLocal: nuevoLocalId,
             idLocalUnico: nuevoLocalUnicoId,
-            usuarioCreador: "SISTEMA");
+            usuarioCreador: "admin");
 
         if (result.IsFailure)
             return Result.Failure<int>(result.Error);

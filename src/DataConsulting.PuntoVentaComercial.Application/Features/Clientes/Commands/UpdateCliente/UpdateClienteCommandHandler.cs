@@ -41,7 +41,7 @@ internal sealed class UpdateClienteCommandHandler(
             request.IdPais,
             request.DireccionLocal,
             request.Telefono1,
-            usuarioModificador: "SISTEMA");
+            usuarioModificador: "admin");
 
         if (result.IsFailure)
             return Result.Failure<bool>(result.Error);
