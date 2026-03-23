@@ -61,7 +61,14 @@ public sealed class VentasController(
             request.Pagos.Select(p => new CreateVentaPagoDto(
                 p.IdFormaPago, p.IdTipoMoneda, p.Importe)).ToList(),
             request.Cuotas.Select(c => new CreateVentaCuotaDto(
-                c.FechaCuota, c.Monto)).ToList());
+                c.FechaCuota, c.Monto)).ToList(),
+            request.ClienteNombre,
+            request.ClienteDireccion,
+            request.ClienteDocumento,
+            request.Observacion,
+            request.PuntosBonus,
+            request.Referencias,
+            request.ClienteCodValidadorDoc);
 
         var result = await createHandler.Handle(command, ct);
         return result.IsSuccess

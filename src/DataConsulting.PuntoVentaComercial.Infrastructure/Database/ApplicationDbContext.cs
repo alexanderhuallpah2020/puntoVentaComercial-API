@@ -1,8 +1,10 @@
 ﻿using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
 using DataConsulting.PuntoVentaComercial.Domain.ClasesSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Clientes;
+using DataConsulting.PuntoVentaComercial.Domain.CuentasPendientes;
 using DataConsulting.PuntoVentaComercial.Domain.DocumentosIdentidad;
 using DataConsulting.PuntoVentaComercial.Domain.FamiliasSunat;
+using DataConsulting.PuntoVentaComercial.Domain.OperacionesPago;
 using DataConsulting.PuntoVentaComercial.Domain.Paises;
 using DataConsulting.PuntoVentaComercial.Domain.SegmentosSunat;
 using DataConsulting.PuntoVentaComercial.Domain.Ventas;
@@ -30,6 +32,10 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext, IUn
     public DbSet<VentaDetalle>         VentaDetalles        { get; set; }
     public DbSet<VentaPago>            VentaPagos           { get; set; }
     public DbSet<VentaCuota>           VentaCuotas          { get; set; }
+    public DbSet<CuentaPendiente>      CuentasPendientes    { get; set; }
+    public DbSet<OperacionPago>        OperacionesPago      { get; set; }
+    public DbSet<OperacionPagoDetalle> OperacionesPagoDetalle { get; set; }
+    public DbSet<CuentaAmortizacion>   CuentasAmortizacion  { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

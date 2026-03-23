@@ -35,7 +35,15 @@ public sealed record CreateVentaCommand(
     short? IdSubdiario,
     IList<CreateVentaDetalleDto> Detalles,
     IList<CreateVentaPagoDto> Pagos,
-    IList<CreateVentaCuotaDto> Cuotas) : ICommand<int>;
+    IList<CreateVentaCuotaDto> Cuotas,
+    // VentaEmision
+    string ClienteNombre,
+    string ClienteDireccion,
+    string? ClienteDocumento,
+    string Observacion,
+    int PuntosBonus,
+    string? Referencias,
+    string? ClienteCodValidadorDoc) : ICommand<int>;
 
 public sealed record CreateVentaDetalleDto(
     int IdArticulo,

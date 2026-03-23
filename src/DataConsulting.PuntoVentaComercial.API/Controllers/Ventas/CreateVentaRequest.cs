@@ -33,7 +33,15 @@ public sealed record CreateVentaRequest(
     short? IdSubdiario,
     IList<CreateVentaDetalleItemRequest> Detalles,
     IList<CreateVentaPagoItemRequest> Pagos,
-    IList<CreateVentaCuotaItemRequest> Cuotas);
+    IList<CreateVentaCuotaItemRequest> Cuotas,
+    // VentaEmision
+    string ClienteNombre,
+    string ClienteDireccion,
+    string? ClienteDocumento,
+    string Observacion,
+    int PuntosBonus,
+    string? Referencias,
+    string? ClienteCodValidadorDoc);
 
 public sealed record CreateVentaDetalleItemRequest(
     int IdArticulo,

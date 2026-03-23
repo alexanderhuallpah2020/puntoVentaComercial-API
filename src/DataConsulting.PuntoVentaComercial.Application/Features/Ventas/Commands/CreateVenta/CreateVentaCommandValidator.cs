@@ -12,8 +12,11 @@ public sealed class CreateVentaCommandValidator : AbstractValidator<CreateVentaC
         RuleFor(x => x.IdTipoDocumento)
             .GreaterThan((short)0).WithMessage("Debe seleccionar el tipo de documento.");
 
-        RuleFor(x => x.NumSerie)
-            .GreaterThan((short)0).WithMessage("Debe especificar la serie del documento.");
+        // Serie válida: numérica (NumSerie > 0) o alfanumérica (NumSerieA no vacío)
+        RuleFor(x => x)
+            .Must(x => (x.NumSerie.HasValue && x.NumSerie > 0) || !string.IsNullOrWhiteSpace(x.NumSerieA))
+            .WithMessage("Debe especificar la serie del documento (numérica o alfanumérica).")
+            .OverridePropertyName(nameof(CreateVentaCommand.NumSerieA));
 
         RuleFor(x => x.IdCliente)
             .GreaterThan(0).WithMessage("Debe seleccionar un cliente.");

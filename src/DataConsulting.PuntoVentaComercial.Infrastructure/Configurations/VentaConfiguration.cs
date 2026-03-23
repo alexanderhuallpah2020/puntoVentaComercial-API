@@ -2,6 +2,7 @@ using DataConsulting.PuntoVentaComercial.Domain.Ventas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+
 namespace DataConsulting.PuntoVentaComercial.Infrastructure.Configurations;
 
 public sealed class VentaConfiguration : IEntityTypeConfiguration<Venta>
@@ -95,6 +96,11 @@ public sealed class VentaConfiguration : IEntityTypeConfiguration<Venta>
         builder.HasMany(x => x.Cuotas)
                .WithOne()
                .HasForeignKey(x => x.IdVenta)
+               .IsRequired();
+
+        builder.HasOne(x => x.Emision)
+               .WithOne()
+               .HasForeignKey<VentaEmision>(x => x.IdVenta)
                .IsRequired();
     }
 }

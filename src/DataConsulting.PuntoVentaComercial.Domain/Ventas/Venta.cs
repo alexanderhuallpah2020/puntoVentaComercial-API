@@ -58,6 +58,8 @@ public sealed class Venta : Entity
     private readonly List<VentaCuota> _cuotas = [];
     public IReadOnlyCollection<VentaCuota> Cuotas => _cuotas.AsReadOnly();
 
+    public VentaEmision? Emision { get; private set; }
+
     private Venta() { }
 
     public static Result<Venta> Create(
@@ -96,7 +98,15 @@ public sealed class Venta : Entity
         IList<VentaDetalle> detalles,
         IList<VentaPago> pagos,
         IList<VentaCuota> cuotas,
-        string usuarioCreador)
+        string usuarioCreador,
+        string clienteNombre,
+        string clienteDireccion,
+        string? clienteDocumento,
+        string observacion,
+        int puntosBonus,
+        string? referencias,
+        string? clienteCodValidadorDoc,
+        short idUsuarioCreador = 1)
     {
         if (detalles.Count == 0)
             return Result.Failure<Venta>(VentaErrors.SinDetalles);
@@ -160,6 +170,16 @@ public sealed class Venta : Entity
 
         foreach (var cuota in cuotas)
             venta._cuotas.Add(cuota);
+
+        venta.Emision = VentaEmision.Create(
+            clienteNombre,
+            clienteDireccion,
+            clienteDocumento,
+            observacion,
+            puntosBonus,
+            referencias,
+            clienteCodValidadorDoc,
+            idUsuarioCreador);
 
         return Result.Success(venta);
     }
