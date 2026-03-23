@@ -216,20 +216,20 @@ internal sealed class CreateVentaCommandHandler(
             cuentaPendiente.MarcarLiquidado(usuario);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // 5. Descuento de stock (solo si política no habilita venta sin stock)
-            if (!habilitarSinStock)
-            {
-                await stockMovementService.DescuentoStockVentaAsync(
-                    request.IdEmpresa,
-                    request.IdSucursal,
-                    idVenta,
-                    request.IdCliente,
-                    request.IdVendedor,
-                    request.IdTipoMoneda,
-                    request.ImporteTotal,
-                    request.Detalles,
-                    cancellationToken);
-            }
+            // 5. Descuento de stock (solo si política no habilita venta sin stock) -- Por ahora lo comentaremos dado que en el codigo legacy nunca pasa por este proceso
+            //if (!habilitarSinStock)
+            //{
+            //    await stockMovementService.DescuentoStockVentaAsync(
+            //        request.IdEmpresa,
+            //        request.IdSucursal,
+            //        idVenta,
+            //        request.IdCliente,
+            //        request.IdVendedor,
+            //        request.IdTipoMoneda,
+            //        request.ImporteTotal,
+            //        request.Detalles,
+            //        cancellationToken);
+            //}
 
             await transaction.CommitAsync(cancellationToken);
             return Result.Success(idVenta);

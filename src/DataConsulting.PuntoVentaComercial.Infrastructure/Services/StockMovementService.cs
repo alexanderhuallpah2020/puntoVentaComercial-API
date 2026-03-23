@@ -3,6 +3,7 @@ using DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Commands.Cr
 using DataConsulting.PuntoVentaComercial.Domain.Enums;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace DataConsulting.PuntoVentaComercial.Infrastructure.Services;
 
@@ -24,11 +25,14 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
         if (conn.State != System.Data.ConnectionState.Open)
             await conn.OpenAsync(cancellationToken);
 
+        // Enlista los comandos ADO.NET en la transacción EF activa (misma conexión)
+        var tx = dbContext.Database.CurrentTransaction?.GetDbTransaction();
+
         // 1. PuntoPartida = Sucursal.Direccion
-        string puntoPartida = await GetSucursalDireccionAsync(conn, idSucursal, cancellationToken);
+        string puntoPartida = await GetSucursalDireccionAsync(conn, tx, idSucursal, cancellationToken);
 
         // 2. NumSerie para Parte de Salida (IdTipoDocumento=30)
-        short numSerie = await GetNumSerieDocumentoAsync(conn, idEmpresa, idSucursal, cancellationToken);
+        short numSerie = await GetNumSerieDocumentoAsync(conn, tx, idEmpresa, idSucursal, cancellationToken);
 
         // 3. Agrupar detalles por IdLocacion
         var grupos = detalles
@@ -43,11 +47,11 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
 
             // 3a. NumDocumento: auto-incrementa el correlativo del documento
             int numDocumento = await GetNuevoCorrelativoDocumentoAsync(
-                conn, idSucursal, (int)EDocumento.GuiaInternaSalida, numSerie, cancellationToken);
+                conn, tx, idSucursal, (int)EDocumento.GuiaInternaSalida, numSerie, cancellationToken);
 
             // 3b. insMovimientoalmacen
             long idMovimientoAlmacen = await InsMovimientoAlmacenAsync(
-                conn, idSucursal, idLocacion, idCliente,
+                conn, tx, idSucursal, idLocacion, idCliente,
                 numSerie, numDocumento, hoy, cancellationToken);
 
             // 3c. Por cada artículo del grupo
@@ -55,25 +59,25 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
             foreach (var (detalle, correlativoVenta) in grupo)
             {
                 decimal costoPromedio = await GetCostoPromedioAsync(
-                    conn, idLocacion, detalle.IdArticulo, cancellationToken);
+                    conn, tx, idLocacion, detalle.IdArticulo, cancellationToken);
 
                 decimal stockAnterior = await GetStockAsync(
-                    conn, idLocacion, detalle.IdArticulo, detalle.IdUnidad, cancellationToken);
+                    conn, tx, idLocacion, detalle.IdArticulo, detalle.IdUnidad, cancellationToken);
 
                 decimal stockActual = stockAnterior - detalle.Cantidad;
 
                 await InsDetalleMovimientoAlmacenAsync(
-                    conn, idMovimientoAlmacen, corrDetMov++, idLocacion, detalle,
+                    conn, tx, idMovimientoAlmacen, corrDetMov++, idLocacion, detalle,
                     costoPromedio, stockAnterior, stockActual, cancellationToken);
 
                 await InsUpdArticuloStockAsync(
-                    conn, idLocacion, detalle.IdArticulo, detalle.IdUnidad,
+                    conn, tx, idLocacion, detalle.IdArticulo, detalle.IdUnidad,
                     stockActual, costoPromedio, cancellationToken);
             }
 
             // 3d. insGuiaRemision
             int idGuiaRemision = await InsGuiaRemisionAsync(
-                conn, idEmpresa, idSucursal, idLocacion, idCliente, idVenta,
+                conn, tx, idEmpresa, idSucursal, idLocacion, idCliente, idVenta,
                 idVendedor, idTipoMoneda, importeTotal,
                 numSerie, numDocumento, idMovimientoAlmacen,
                 puntoPartida, hoy, cancellationToken);
@@ -83,10 +87,10 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
             foreach (var (detalle, correlativoVenta) in grupo)
             {
                 decimal costoPromedio = await GetCostoPromedioAsync(
-                    conn, idLocacion, detalle.IdArticulo, cancellationToken);
+                    conn, tx, idLocacion, detalle.IdArticulo, cancellationToken);
 
                 await InsDetalleGuiaRemisionAsync(
-                    conn, idGuiaRemision, corrGuia++, correlativoVenta,
+                    conn, tx, idGuiaRemision, corrGuia++, correlativoVenta,
                     idEmpresa, detalle, costoPromedio, hoy, cancellationToken);
             }
         }
@@ -95,9 +99,12 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
     // ─── Helpers de lectura ───────────────────────────────────────────────────
 
     private static async Task<string> GetSucursalDireccionAsync(
-        System.Data.Common.DbConnection conn, short idSucursal, CancellationToken ct)
+        System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
+        short idSucursal, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandText = "SELECT ISNULL(Direccion, '') FROM dbo.Sucursal WHERE IdSucursal = @s";
         var p = cmd.CreateParameter(); p.ParameterName = "@s"; p.Value = idSucursal;
         cmd.Parameters.Add(p);
@@ -106,9 +113,12 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
     }
 
     private static async Task<short> GetNumSerieDocumentoAsync(
-        System.Data.Common.DbConnection conn, short idEmpresa, short idSucursal, CancellationToken ct)
+        System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
+        short idEmpresa, short idSucursal, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandText = """
             SELECT TOP 1 ISNULL(NumSerie, 0)
             FROM dbo.CorrelativoDocumento
@@ -122,10 +132,12 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
     }
 
     private static async Task<int> GetNuevoCorrelativoDocumentoAsync(
-        System.Data.Common.DbConnection conn, short idSucursal,
-        int idTipoDocumento, short numSerie, CancellationToken ct)
+        System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
+        short idSucursal, int idTipoDocumento, short numSerie, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandType = System.Data.CommandType.StoredProcedure;
         cmd.CommandText = "dbo.GetNuevoCorrelativoDocumento";
         var p1 = cmd.CreateParameter(); p1.ParameterName = "@IdSucursal";      p1.Value = idSucursal;
@@ -139,9 +151,12 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
     }
 
     private static async Task<decimal> GetCostoPromedioAsync(
-        System.Data.Common.DbConnection conn, int idLocacion, int idArticulo, CancellationToken ct)
+        System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
+        int idLocacion, int idArticulo, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandText = """
             SELECT ISNULL(CostoPromedio, 0)
             FROM dbo.ArticuloLoc
@@ -155,10 +170,12 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
     }
 
     private static async Task<decimal> GetStockAsync(
-        System.Data.Common.DbConnection conn, int idLocacion,
-        int idArticulo, short idUnidad, CancellationToken ct)
+        System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
+        int idLocacion, int idArticulo, short idUnidad, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandText = """
             SELECT ISNULL(Stock, 0)
             FROM dbo.ArticuloStock
@@ -176,10 +193,12 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
 
     private static async Task<long> InsMovimientoAlmacenAsync(
         System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
         short idSucursal, int idLocacion, int idCliente,
         short numSerie, int numDocumento, DateTime hoy, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandType = System.Data.CommandType.StoredProcedure;
         cmd.CommandText = "dbo.insMovimientoalmacen";
 
@@ -214,11 +233,13 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
 
     private static async Task InsDetalleMovimientoAlmacenAsync(
         System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
         long idMovimientoAlmacen, short correlativo, int idLocacion,
         CreateVentaDetalleDto d, decimal costoPromedio,
         decimal stockAnterior, decimal stockActual, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandType = System.Data.CommandType.StoredProcedure;
         cmd.CommandText = "dbo.insDetallemovimientoalmacen";
 
@@ -245,10 +266,12 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
 
     private static async Task InsUpdArticuloStockAsync(
         System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
         int idLocacion, int idArticulo, short idUnidad,
         decimal stock, decimal costoPromedio, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandType = System.Data.CommandType.StoredProcedure;
         cmd.CommandText = "dbo.InsUpdArticuloStock";
 
@@ -266,6 +289,7 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
 
     private static async Task<int> InsGuiaRemisionAsync(
         System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
         short idEmpresa, short idSucursal, int idLocacion,
         int idCliente, int idVenta, short idVendedor,
         short idTipoMoneda, decimal importeTotal,
@@ -273,6 +297,7 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
         string puntoPartida, DateTime hoy, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandType = System.Data.CommandType.StoredProcedure;
         cmd.CommandText = "dbo.insGuiaRemision";
 
@@ -365,11 +390,13 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
 
     private static async Task InsDetalleGuiaRemisionAsync(
         System.Data.Common.DbConnection conn,
+        System.Data.Common.DbTransaction? tx,
         int idGuiaRemision, short correlativoGuia, short correlativoVenta,
         short idEmpresa, CreateVentaDetalleDto d,
         decimal costoPromedio, DateTime hoy, CancellationToken ct)
     {
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandType = System.Data.CommandType.StoredProcedure;
         cmd.CommandText = "dbo.InsDetalleGuiaRemision";
 
