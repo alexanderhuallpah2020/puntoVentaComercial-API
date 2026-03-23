@@ -34,6 +34,8 @@ public sealed class OperacionPago
     public short? IdConceptoCtaCte { get; private set; }
     public string UsuarioInsert { get; private set; } = default!;
     public DateTime FechaInsert { get; private set; }
+    public string UsuarioUpdate { get; private set; } = default!;  // '' en insert, per SP
+    public DateTime FechaUpdate { get; private set; }               // getdate() en insert, per SP
 
     private readonly List<OperacionPagoDetalle> _detalles = [];
     public IReadOnlyCollection<OperacionPagoDetalle> Detalles => _detalles.AsReadOnly();
@@ -59,6 +61,7 @@ public sealed class OperacionPago
         short? idTurnoAsistencia,
         byte estadoContable,
         string usuarioCreador,
+        DateTime ahora,
         IList<OperacionPagoDetalle> detalles,
         IList<CuentaAmortizacion> amortizaciones)
     {
@@ -95,7 +98,9 @@ public sealed class OperacionPago
             IdRendicionCajaChica = null,
             IdConceptoCtaCte     = null,
             UsuarioInsert        = usuarioCreador,
-            FechaInsert          = DateTime.Now
+            FechaInsert          = ahora,
+            UsuarioUpdate        = "",
+            FechaUpdate          = ahora
         };
 
         foreach (var detalle in detalles)

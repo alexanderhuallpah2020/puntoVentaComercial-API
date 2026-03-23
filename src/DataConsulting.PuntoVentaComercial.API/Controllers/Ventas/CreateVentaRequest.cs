@@ -12,7 +12,7 @@ public sealed record CreateVentaRequest(
     short? IdTipoCliente,
     short IdVendedor,
     short? IdVendedor2,
-    short IdTurnoAsistencia,
+    short? IdTurnoAsistencia,
     short IdTipoMoneda,
     decimal TipoCambio,
     decimal ValorNeto,

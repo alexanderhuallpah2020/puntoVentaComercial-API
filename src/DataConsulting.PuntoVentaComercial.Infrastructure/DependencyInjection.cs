@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Services;
+
 using DataConsulting.PuntoVentaComercial.Domain.SegmentosSunat;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Database;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Repositories;
@@ -46,6 +47,8 @@ namespace DataConsulting.PuntoVentaComercial.Infrastructure
             services.AddScoped<ISunatClientLookupService, SunatClientLookupStub>();
             services.AddScoped<IStockMovementService, StockMovementService>();
             services.AddScoped<IPoliticService, PoliticService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IDateTimeService, DateTimeService>();
         }
 
         private static void AddApiVersioning(IServiceCollection services)

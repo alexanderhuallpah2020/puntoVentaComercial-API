@@ -1,5 +1,6 @@
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
+using DataConsulting.PuntoVentaComercial.Application.Abstractions.Services;
 using DataConsulting.PuntoVentaComercial.Domain.Abstractions;
 using DataConsulting.PuntoVentaComercial.Domain.Ventas;
 
@@ -7,7 +8,9 @@ namespace DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Command
 
 internal sealed class AnularVentaCommandHandler(
     IVentaRepository repository,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ICurrentUserService currentUserService,
+    IDateTimeService dateTimeService)
     : ICommandHandler<AnularVentaCommand, bool>
 {
     public async Task<Result<bool>> Handle(
@@ -17,7 +20,7 @@ internal sealed class AnularVentaCommandHandler(
         if (venta is null)
             return Result.Failure<bool>(VentaErrors.NotFound(request.IdVenta));
 
-        var result = venta.Anular("admin");
+        var result = venta.Anular(currentUserService.UserName, dateTimeService.Now);
         if (result.IsFailure)
             return Result.Failure<bool>(result.Error);
 

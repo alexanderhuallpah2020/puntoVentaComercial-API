@@ -17,6 +17,7 @@ public sealed class VentaPago
         short idFormaPago,
         short idTipoMoneda,
         decimal importe,
+        DateTime ahora,
         short idUsuarioCreador = 1)
     {
         return new VentaPago
@@ -27,7 +28,7 @@ public sealed class VentaPago
             Estado           = 1,
             UpdateToken      = 0,
             IdUsuarioCreador = idUsuarioCreador,
-            FechaCreacion    = DateTime.Now
+            FechaCreacion    = ahora
         };
     }
 }

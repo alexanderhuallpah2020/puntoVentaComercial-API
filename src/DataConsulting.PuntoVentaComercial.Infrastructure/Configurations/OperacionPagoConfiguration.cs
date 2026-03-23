@@ -45,10 +45,8 @@ public sealed class OperacionPagoConfiguration : IEntityTypeConfiguration<Operac
         builder.Property(x => x.IdConceptoCtaCte).HasColumnType("smallint");
         builder.Property(x => x.UsuarioInsert).HasMaxLength(20).IsRequired();
         builder.Property(x => x.FechaInsert).HasColumnType("smalldatetime").IsRequired();
-
-        // Shadow properties de auditoría
-        builder.Property<string?>("UsuarioUpdate").HasMaxLength(20);
-        builder.Property<DateTime?>("FechaUpdate").HasColumnType("smalldatetime");
+        builder.Property(x => x.UsuarioUpdate).HasMaxLength(20).IsRequired();
+        builder.Property(x => x.FechaUpdate).HasColumnType("smalldatetime").IsRequired();
 
         builder.HasMany(x => x.Detalles)
                .WithOne()

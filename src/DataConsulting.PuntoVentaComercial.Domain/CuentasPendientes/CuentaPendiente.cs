@@ -45,7 +45,8 @@ public sealed class CuentaPendiente
         short idTipoDocumento,
         byte flagTipo,
         string glosa,
-        string usuarioCreador)
+        string usuarioCreador,
+        DateTime ahora)
     {
         return new CuentaPendiente
         {
@@ -76,7 +77,7 @@ public sealed class CuentaPendiente
             FlagInicial      = 1,
             FlagLiquidado    = 0,
             UsuarioCreador   = usuarioCreador,
-            FechaCreacion    = DateTime.Now
+            FechaCreacion    = ahora
         };
     }
 

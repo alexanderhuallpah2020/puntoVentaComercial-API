@@ -41,6 +41,7 @@ public sealed class VentaDetalle
         int idTipoAfectoIGV,
         decimal isc,
         decimal valorICBPER,
+        DateTime ahora,
         short idUsuarioCreador = 1)
     {
         decimal valorVenta = cantidad * precioUnitario - importeDescuento;
@@ -66,7 +67,7 @@ public sealed class VentaDetalle
             ValorICBPER          = valorICBPER,
             FlagRegalo           = flagRegalo,
             IdUsuarioCreador     = idUsuarioCreador,
-            FechaCreacion        = DateTime.Now
+            FechaCreacion        = ahora
         };
     }
 }

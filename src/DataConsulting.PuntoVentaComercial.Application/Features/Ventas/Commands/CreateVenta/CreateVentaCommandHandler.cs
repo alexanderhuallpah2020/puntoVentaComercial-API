@@ -17,12 +17,22 @@ internal sealed class CreateVentaCommandHandler(
     IOperacionPagoRepository operacionPagoRepository,
     IUnitOfWork unitOfWork,
     IStockMovementService stockMovementService,
-    IPoliticService politicService)
+    IPoliticService politicService,
+    ICurrentUserService currentUserService,
+    IDateTimeService dateTimeService)
     : ICommandHandler<CreateVentaCommand, int>
 {
     public async Task<Result<int>> Handle(
         CreateVentaCommand request, CancellationToken cancellationToken)
     {
+        string usuario = currentUserService.UserName;
+        DateTime ahora = dateTimeService.Now;
+
+        // 0 no es un IdTurnoAsistencia válido — se trata igual que null
+        short? idTurnoAsistencia = request.IdTurnoAsistencia is null or 0
+            ? null
+            : request.IdTurnoAsistencia;
+
         var cliente = await clienteRepository.GetByIdAsync(request.IdCliente, cancellationToken);
         if (cliente is null)
             return Result.Failure<int>(VentaErrors.ClienteNoEncontrado(request.IdCliente));
@@ -59,11 +69,12 @@ internal sealed class CreateVentaCommandHandler(
                 d.FlagRegalo,
                 d.IdTipoAfectoIGV,
                 d.Isc,
-                d.ValorICBPER))
+                d.ValorICBPER,
+                ahora))
             .ToList();
 
         var pagos = request.Pagos
-            .Select(p => VentaPago.Create(p.IdFormaPago, p.IdTipoMoneda, p.Importe))
+            .Select(p => VentaPago.Create(p.IdFormaPago, p.IdTipoMoneda, p.Importe, ahora))
             .ToList();
 
         short cuotaCorrelativo = 1;
@@ -89,7 +100,7 @@ internal sealed class CreateVentaCommandHandler(
             request.IdTipoCliente,
             request.IdVendedor,
             request.IdVendedor2,
-            request.IdTurnoAsistencia,
+            idTurnoAsistencia,
             request.IdTipoMoneda,
             request.TipoCambio,
             request.ValorNeto,
@@ -111,7 +122,8 @@ internal sealed class CreateVentaCommandHandler(
             detalles,
             pagos,
             cuotas,
-            usuarioCreador: "admin",
+            usuarioCreador: usuario,
+            ahora,
             request.ClienteNombre,
             request.ClienteDireccion,
             request.ClienteDocumento,
@@ -152,7 +164,8 @@ internal sealed class CreateVentaCommandHandler(
                 idTipoDocumento: request.IdTipoDocumento,
                 flagTipo:       1,
                 glosa:          "",
-                usuarioCreador: "admin");
+                usuarioCreador: usuario,
+                ahora);
 
             cuentaPendienteRepository.Add(cuentaPendiente);
             await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -191,7 +204,8 @@ internal sealed class CreateVentaCommandHandler(
                 observaciones:  "",
                 idTurnoAsistencia: request.IdTurnoAsistencia == 0 ? null : request.IdTurnoAsistencia,
                 estadoContable: 1,
-                usuarioCreador: "admin",
+                usuarioCreador: usuario,
+                ahora,
                 detalles:       [pagoDetalle],
                 amortizaciones: [amortizacion]);
 
@@ -199,7 +213,7 @@ internal sealed class CreateVentaCommandHandler(
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             // 4. UPDATE CuentaPendiente — marcar como liquidado (Saldo=0, FlagLiquidado=1)
-            cuentaPendiente.MarcarLiquidado("admin");
+            cuentaPendiente.MarcarLiquidado(usuario);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             // 5. Descuento de stock (solo si política no habilita venta sin stock)
