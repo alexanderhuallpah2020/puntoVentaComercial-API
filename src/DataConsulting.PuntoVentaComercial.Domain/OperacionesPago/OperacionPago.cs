@@ -61,7 +61,7 @@ public sealed class OperacionPago
         short? idTurnoAsistencia,
         byte estadoContable,
         string usuarioCreador,
-        DateTime ahora,
+        DateTime now,
         IList<OperacionPagoDetalle> detalles,
         IList<CuentaAmortizacion> amortizaciones)
     {
@@ -98,9 +98,9 @@ public sealed class OperacionPago
             IdRendicionCajaChica = null,
             IdConceptoCtaCte     = null,
             UsuarioInsert        = usuarioCreador,
-            FechaInsert          = ahora,
+            FechaInsert          = now,
             UsuarioUpdate        = "",
-            FechaUpdate          = ahora
+            FechaUpdate          = now
         };
 
         foreach (var detalle in detalles)

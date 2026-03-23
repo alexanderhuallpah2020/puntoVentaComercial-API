@@ -23,7 +23,7 @@ public sealed class VentaEmision
         int puntosBonus,
         string? referencias,
         string? clienteCodValidadorDoc,
-        DateTime ahora,
+        DateTime now,
         short idUsuarioCreador = 1)
     {
         return new VentaEmision
@@ -36,7 +36,7 @@ public sealed class VentaEmision
             Referencias             = referencias,
             ClienteCodValidadorDoc  = clienteCodValidadorDoc,
             IdUsuarioCreador        = idUsuarioCreador,
-            FechaCreacion           = ahora
+            FechaCreacion           = now
         };
     }
 }

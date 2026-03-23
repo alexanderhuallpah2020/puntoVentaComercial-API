@@ -99,7 +99,7 @@ public sealed class Venta : Entity
         IList<VentaPago> pagos,
         IList<VentaCuota> cuotas,
         string usuarioCreador,
-        DateTime ahora,
+        DateTime now,
         string clienteNombre,
         string clienteDireccion,
         string? clienteDocumento,
@@ -133,8 +133,8 @@ public sealed class Venta : Entity
             IdTipoCliente              = idTipoCliente ?? 1, // 1 = Clientes Generales (default POS)
             Vendedor                   = vendedor,
             Vendedor2                  = vendedor2,
-            FechaEmision               = ahora,
-            FechaProceso               = ahora,
+            FechaEmision               = now,
+            FechaProceso               = now,
             Estado                     = "A",
             IdTipoMoneda               = idTipoMoneda,
             TipoCambio                 = tipoCambio,
@@ -159,7 +159,7 @@ public sealed class Venta : Entity
             FlagPagoAdelantado         = 0,
             FlagDetraccion             = 0,
             UsuarioInsert              = usuarioCreador,
-            FechaInsert                = ahora,
+            FechaInsert                = now,
             UpdateToken                = 0
         };
 
@@ -180,20 +180,20 @@ public sealed class Venta : Entity
             puntosBonus,
             referencias,
             clienteCodValidadorDoc,
-            ahora,
+            now,
             idUsuarioCreador);
 
         return Result.Success(venta);
     }
 
-    public Result Anular(string usuarioModificador, DateTime ahora)
+    public Result Anular(string usuarioModificador, DateTime now)
     {
         if (Estado != "A")
             return Result.Failure(VentaErrors.EstadoInvalidoParaAnular);
 
         Estado           = "E";
         UsuarioUpdate    = usuarioModificador;
-        FechaUpdate      = ahora;
+        FechaUpdate      = now;
         UpdateToken++;
 
         return Result.Success();

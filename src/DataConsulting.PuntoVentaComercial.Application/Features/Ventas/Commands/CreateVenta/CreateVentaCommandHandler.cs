@@ -26,7 +26,7 @@ internal sealed class CreateVentaCommandHandler(
         CreateVentaCommand request, CancellationToken cancellationToken)
     {
         string usuario = currentUserService.UserName;
-        DateTime ahora = dateTimeService.Now;
+        DateTime now = dateTimeService.Now;
 
         // 0 no es un IdTurnoAsistencia válido — se trata igual que null
         short? idTurnoAsistencia = request.IdTurnoAsistencia is null or 0
@@ -70,11 +70,11 @@ internal sealed class CreateVentaCommandHandler(
                 d.IdTipoAfectoIGV,
                 d.Isc,
                 d.ValorICBPER,
-                ahora))
+                now))
             .ToList();
 
         var pagos = request.Pagos
-            .Select(p => VentaPago.Create(p.IdFormaPago, p.IdTipoMoneda, p.Importe, ahora))
+            .Select(p => VentaPago.Create(p.IdFormaPago, p.IdTipoMoneda, p.Importe, now))
             .ToList();
 
         short cuotaCorrelativo = 1;
@@ -123,7 +123,7 @@ internal sealed class CreateVentaCommandHandler(
             pagos,
             cuotas,
             usuarioCreador: usuario,
-            ahora,
+            now,
             request.ClienteNombre,
             request.ClienteDireccion,
             request.ClienteDocumento,
@@ -165,7 +165,7 @@ internal sealed class CreateVentaCommandHandler(
                 flagTipo:       1,
                 glosa:          "",
                 usuarioCreador: usuario,
-                ahora);
+                now);
 
             cuentaPendienteRepository.Add(cuentaPendiente);
             await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -205,7 +205,7 @@ internal sealed class CreateVentaCommandHandler(
                 idTurnoAsistencia: request.IdTurnoAsistencia == 0 ? null : request.IdTurnoAsistencia,
                 estadoContable: 1,
                 usuarioCreador: usuario,
-                ahora,
+                now,
                 detalles:       [pagoDetalle],
                 amortizaciones: [amortizacion]);
 

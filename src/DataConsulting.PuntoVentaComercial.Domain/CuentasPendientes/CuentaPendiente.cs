@@ -46,7 +46,7 @@ public sealed class CuentaPendiente
         byte flagTipo,
         string glosa,
         string usuarioCreador,
-        DateTime ahora)
+        DateTime now)
     {
         return new CuentaPendiente
         {
@@ -77,7 +77,7 @@ public sealed class CuentaPendiente
             FlagInicial      = 1,
             FlagLiquidado    = 0,
             UsuarioCreador   = usuarioCreador,
-            FechaCreacion    = ahora
+            FechaCreacion    = now
         };
     }
 
