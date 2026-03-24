@@ -24,4 +24,7 @@ public static class VentaErrors
 
     public static readonly Error FacturaRequiereRuc =
         Error.Problem("Venta.FacturaRequiereRuc", "Para emitir una Factura, el cliente debe tener RUC válido.");
+
+    public static Error SerieNoConfigurada(string numSerieA) =>
+        Error.Problem("Venta.SerieNoConfigurada", $"La serie '{numSerieA}' no tiene correlativo configurado para esta sucursal. Configure la serie en el módulo de documentos.");
 }

@@ -8,13 +8,10 @@ public sealed record CreateVentaCommand(
     short IdEstacionTrabajo,
     short IdSubSede,
     short IdTipoDocumento,
-    short? NumSerie,
     string NumSerieA,
     int IdCliente,
     short? IdTipoCliente,
     short IdVendedor,
-    short? IdVendedor2,
-    short? IdTurnoAsistencia,
     short IdTipoMoneda,
     decimal TipoCambio,
     decimal ValorNeto,
@@ -39,11 +36,8 @@ public sealed record CreateVentaCommand(
     // VentaEmision
     string ClienteNombre,
     string ClienteDireccion,
-    string? ClienteDocumento,
     string Observacion,
-    int PuntosBonus,
-    string? Referencias,
-    string? ClienteCodValidadorDoc) : ICommand<int>;
+    int PuntosBonus) : ICommand<int>;
 
 public sealed record CreateVentaDetalleDto(
     int IdArticulo,

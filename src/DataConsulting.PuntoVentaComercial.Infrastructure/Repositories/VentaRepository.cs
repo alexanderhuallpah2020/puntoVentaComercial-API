@@ -68,13 +68,14 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
         return result.FirstOrDefault();
     }
 
-    public async Task<int> GetNextNumeroDocumentoAsync(
+    public async Task<int?> GetNextNumeroDocumentoAsync(
         short idSucursal, short idTipoDocumento, string numSerieA, CancellationToken ct)
     {
         // @NumSerie siempre es 0; el SP busca por NumSerieA (ej. 'F001', 'B001')
+        // Retorna null si no existe configuración para esa serie en CorrelativoDocumento
         short numSerie = 0;
         var result = await DbContext.Database
-            .SqlQuery<int>($"EXEC dbo.GetNuevoCorrelativoDocumento {idSucursal}, {idTipoDocumento}, {numSerie}, {numSerieA}")
+            .SqlQuery<int?>($"EXEC dbo.GetNuevoCorrelativoDocumento {idSucursal}, {idTipoDocumento}, {numSerie}, {numSerieA}")
             .ToListAsync(ct);
         return result.FirstOrDefault();
     }

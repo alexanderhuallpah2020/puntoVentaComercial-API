@@ -6,13 +6,10 @@ public sealed record CreateVentaRequest(
     short IdEstacionTrabajo,
     short IdSubSede,
     short IdTipoDocumento,
-    short? NumSerie,
     string NumSerieA,
     int IdCliente,
     short? IdTipoCliente,
     short IdVendedor,
-    short? IdVendedor2,
-    short? IdTurnoAsistencia,
     short IdTipoMoneda,
     decimal TipoCambio,
     decimal ValorNeto,
@@ -37,11 +34,8 @@ public sealed record CreateVentaRequest(
     // VentaEmision
     string ClienteNombre,
     string ClienteDireccion,
-    string? ClienteDocumento,
     string Observacion,
-    int PuntosBonus,
-    string? Referencias,
-    string? ClienteCodValidadorDoc);
+    int PuntosBonus);
 
 public sealed record CreateVentaDetalleItemRequest(
     int IdArticulo,

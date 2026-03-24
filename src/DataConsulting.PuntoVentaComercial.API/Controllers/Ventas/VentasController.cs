@@ -29,13 +29,10 @@ public sealed class VentasController(
             request.IdEstacionTrabajo,
             request.IdSubSede,
             request.IdTipoDocumento,
-            request.NumSerie,
             request.NumSerieA,
             request.IdCliente,
             request.IdTipoCliente,
             request.IdVendedor,
-            request.IdVendedor2,
-            request.IdTurnoAsistencia,
             request.IdTipoMoneda,
             request.TipoCambio,
             request.ValorNeto,
@@ -64,11 +61,8 @@ public sealed class VentasController(
                 c.FechaCuota, c.Monto)).ToList(),
             request.ClienteNombre,
             request.ClienteDireccion,
-            request.ClienteDocumento,
             request.Observacion,
-            request.PuntosBonus,
-            request.Referencias,
-            request.ClienteCodValidadorDoc);
+            request.PuntosBonus);
 
         var result = await createHandler.Handle(command, ct);
         return result.IsSuccess

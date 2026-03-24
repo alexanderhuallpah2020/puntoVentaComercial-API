@@ -14,7 +14,7 @@ public interface IVentaRepository
         int page,
         int pageSize,
         CancellationToken ct);
-    Task<int> GetNextNumeroDocumentoAsync(
+    Task<int?> GetNextNumeroDocumentoAsync(
         short idSucursal, short idTipoDocumento, string numSerieA, CancellationToken ct);
     // Correlativo contable mensual — solo cuando IdSubdiario > 0
     Task<int> GetNroCorrelativoVentaAsync(

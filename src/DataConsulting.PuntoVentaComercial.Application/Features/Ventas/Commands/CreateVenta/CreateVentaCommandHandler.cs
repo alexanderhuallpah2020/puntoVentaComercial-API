@@ -28,17 +28,14 @@ internal sealed class CreateVentaCommandHandler(
         string usuario = currentUserService.UserName;
         DateTime now = dateTimeService.Now;
 
-        // 0 no es un IdTurnoAsistencia válido — se trata igual que null
-        short? idTurnoAsistencia = request.IdTurnoAsistencia is null or 0
-            ? null
-            : request.IdTurnoAsistencia;
-
         var cliente = await clienteRepository.GetByIdAsync(request.IdCliente, cancellationToken);
         if (cliente is null)
             return Result.Failure<int>(VentaErrors.ClienteNoEncontrado(request.IdCliente));
 
-        int nextNumero = await ventaRepository.GetNextNumeroDocumentoAsync(
+        int? nextNumero = await ventaRepository.GetNextNumeroDocumentoAsync(
             request.IdSucursal, request.IdTipoDocumento, request.NumSerieA, cancellationToken);
+        if (nextNumero is null)
+            return Result.Failure<int>(VentaErrors.SerieNoConfigurada(request.NumSerieA));
 
         // NroCorrelativo contable: solo cuando hay subdiario asignado
         int nroCorrelativo = 0;
@@ -92,15 +89,15 @@ internal sealed class CreateVentaCommandHandler(
             request.IdEstacionTrabajo,
             request.IdSubSede,
             request.IdTipoDocumento,
-            request.NumSerie,
+            numSerie: null,
             request.NumSerieA,
-            nextNumero,
+            nextNumero.Value,
             nroCorrelativo,
             request.IdCliente,
             request.IdTipoCliente,
             request.IdVendedor,
-            request.IdVendedor2,
-            idTurnoAsistencia,
+            vendedor2: null,
+            idTurnoAsistencia: null,
             request.IdTipoMoneda,
             request.TipoCambio,
             request.ValorNeto,
@@ -126,11 +123,11 @@ internal sealed class CreateVentaCommandHandler(
             now,
             request.ClienteNombre,
             request.ClienteDireccion,
-            request.ClienteDocumento,
+            clienteDocumento: null,
             request.Observacion,
             request.PuntosBonus,
-            request.Referencias,
-            request.ClienteCodValidadorDoc);
+            referencias: null,
+            clienteCodValidadorDoc: null);
 
         if (result.IsFailure)
             return Result.Failure<int>(result.Error);
@@ -202,7 +199,7 @@ internal sealed class CreateVentaCommandHandler(
                 tipoCambio:     request.TipoCambio,
                 idEntidad:      idEntidad,
                 observaciones:  "",
-                idTurnoAsistencia: request.IdTurnoAsistencia == 0 ? null : request.IdTurnoAsistencia,
+                idTurnoAsistencia: null,
                 estadoContable: 1,
                 usuarioCreador: usuario,
                 now,
