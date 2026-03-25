@@ -85,6 +85,54 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
         return result.FirstOrDefault();
     }
 
+    public async Task<string?> BuscarCodigoSunatAsync(int idVenta, CancellationToken ct)
+    {
+        var result = await DbContext.Database
+            .SqlQuery<string?>($"EXEC dbo.BuscarCodigoSunat {idVenta}")
+            .ToListAsync(ct);
+        return result.FirstOrDefault();
+    }
+
+    public async Task InsVentaXmlLogAsync(
+        int idVenta, string nombreXml, string nombreZip, int resultado, CancellationToken ct)
+    {
+        await DbContext.Database.ExecuteSqlRawAsync(
+            "EXEC dbo.InsVentaXmlLog @IdVenta, @Fecha, @NombreXml, @NombreZip, @IdUsuario, @Resultado",
+            new Microsoft.Data.SqlClient.SqlParameter("@IdVenta", idVenta),
+            new Microsoft.Data.SqlClient.SqlParameter("@Fecha", DateTime.Now),
+            new Microsoft.Data.SqlClient.SqlParameter("@NombreXml", nombreXml),
+            new Microsoft.Data.SqlClient.SqlParameter("@NombreZip", nombreZip),
+            new Microsoft.Data.SqlClient.SqlParameter("@IdUsuario", 1),
+            new Microsoft.Data.SqlClient.SqlParameter("@Resultado", resultado));
+    }
+
+    public async Task UpdVentaArchivoXmlAsync(
+        int idVenta, byte[] xmlBytes, string nombreXml,
+        byte[]? cdrBytes, string? nombreCdr, string usuario, CancellationToken ct)
+    {
+        await DbContext.Database.ExecuteSqlRawAsync(
+            "EXEC dbo.UpdVentaArchivoXML @IdVenta, @ArchivoXML, @NombreArchivoXML, @RespuestaXML, @NombreRespuestaXML, @Usuario",
+            new Microsoft.Data.SqlClient.SqlParameter("@IdVenta", idVenta),
+            new Microsoft.Data.SqlClient.SqlParameter("@ArchivoXML", xmlBytes),
+            new Microsoft.Data.SqlClient.SqlParameter("@NombreArchivoXML", nombreXml),
+            new Microsoft.Data.SqlClient.SqlParameter("@RespuestaXML",
+                (object?)cdrBytes ?? System.DBNull.Value),
+            new Microsoft.Data.SqlClient.SqlParameter("@NombreRespuestaXML",
+                (object?)nombreCdr ?? System.DBNull.Value),
+            new Microsoft.Data.SqlClient.SqlParameter("@Usuario", usuario));
+    }
+
+    public async Task UpdEstadoFacturaElectronicaAsync(
+        int idVenta, string codigoSunat, string estadoSunat, string estado, CancellationToken ct)
+    {
+        await DbContext.Database.ExecuteSqlRawAsync(
+            "EXEC dbo.UpdEstadoFacturaElectronica @CodigoSunat, @EstadoSunat, @Estado, @IdVenta",
+            new Microsoft.Data.SqlClient.SqlParameter("@CodigoSunat", codigoSunat),
+            new Microsoft.Data.SqlClient.SqlParameter("@EstadoSunat", estadoSunat),
+            new Microsoft.Data.SqlClient.SqlParameter("@Estado", estado),
+            new Microsoft.Data.SqlClient.SqlParameter("@IdVenta", idVenta));
+    }
+
     public async Task<int?> GetNextNumeroDocumentoAsync(
         short idSucursal, short idTipoDocumento, string numSerieA, CancellationToken ct)
     {

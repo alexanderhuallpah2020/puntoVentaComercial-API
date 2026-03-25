@@ -2,6 +2,7 @@ using Asp.Versioning;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
 using DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Commands.AnularVenta;
 using DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Commands.CreateVenta;
+using DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Commands.EnviarVentaSunat;
 using DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Queries.GetVentaById;
 using DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Queries.SearchVentas;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace DataConsulting.PuntoVentaComercial.API.Controllers.Ventas;
 public sealed class VentasController(
     ICommandHandler<CreateVentaCommand, int> createHandler,
     ICommandHandler<AnularVentaCommand, bool> anularHandler,
+    ICommandHandler<EnviarVentaSunatCommand, EnviarVentaSunatResponse> enviarSunatHandler,
     IQueryHandler<GetVentaByIdQuery, GetVentaByIdResponse> getByIdHandler,
     IQueryHandler<SearchVentasQuery, SearchVentasResponse> searchHandler)
     : ControllerBase
@@ -94,6 +96,13 @@ public sealed class VentasController(
             new SearchVentasQuery(
                 fechaDesde, fechaHasta, nombreCliente, numSerieA,
                 numDocumento, idTipoDocumento, estado, page, pageSize), ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpPost("{id:int}/enviar-sunat")]
+    public async Task<IActionResult> EnviarSunat(int id, CancellationToken ct)
+    {
+        var result = await enviarSunatHandler.Handle(new EnviarVentaSunatCommand(id), ct);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 

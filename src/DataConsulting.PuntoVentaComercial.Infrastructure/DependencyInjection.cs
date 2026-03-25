@@ -5,7 +5,9 @@ using DataConsulting.PuntoVentaComercial.Infrastructure.Database;
 using DataConsulting.PuntoVentaComercial.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using DataConsulting.PuntoVentaComercial.Application.Abstractions.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DataConsulting.PuntoVentaComercial.Infrastructure
 {
@@ -45,6 +47,20 @@ services.AddScoped<ISunatClientLookupService, SunatClientLookupStub>();
             services.AddScoped<IPoliticService, PoliticService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IDateTimeService, DateTimeService>();
+
+            // SUNAT settings
+            services.Configure<SunatSettings>(configuration.GetSection(SunatSettings.SectionName));
+
+            // SUNAT electronic billing
+            services.AddScoped<IUblXmlGeneratorService, UblXmlGeneratorService>();
+            services.AddScoped<IXmlSignerService, XmlSignerService>();
+            services.AddScoped<ISunatSenderService, SunatSoapService>();
+            services.AddHttpClient("sunat")
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                });
         }
 
         private static void AddApiVersioning(IServiceCollection services)

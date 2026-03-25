@@ -27,4 +27,13 @@ public static class VentaErrors
 
     public static Error SerieNoConfigurada(string numSerieA) =>
         Error.Problem("Venta.SerieNoConfigurada", $"La serie '{numSerieA}' no tiene correlativo configurado para esta sucursal. Configure la serie en el módulo de documentos.");
+
+    public static readonly Error EmpresaSinFirmante =
+        Error.Problem("Venta.EmpresaSinFirmante", "La empresa no tiene configurado el firmante electrónico (RUC, certificado, credenciales SUNAT).");
+
+    public static readonly Error DocumentoNoElectronico =
+        Error.Problem("Venta.DocumentoNoElectronico", "El tipo de documento no está configurado como documento electrónico en SUNAT.");
+
+    public static readonly Error YaEnviadaASunat =
+        Error.Problem("Venta.YaEnviadaASunat", "La venta ya fue enviada y aceptada por SUNAT.");
 }
