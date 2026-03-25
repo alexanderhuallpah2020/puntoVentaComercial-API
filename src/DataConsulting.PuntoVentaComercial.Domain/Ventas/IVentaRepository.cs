@@ -22,7 +22,14 @@ public interface IVentaRepository
     void Add(Venta venta);
 
     // SUNAT electronic billing
-    Task<string?> BuscarCodigoSunatAsync(int idVenta, CancellationToken ct);
+    /// <summary>
+    /// Una sola consulta que retorna:
+    ///   CodigoSunatRespuesta — respuesta previa de SUNAT en la venta ("0" = aceptada, null = nunca enviada).
+    ///   EstadoSunat          — descripción de la respuesta previa.
+    ///   CodigoSunatDocumento — código catálogo 01 del tipo de documento ("01"=Factura, "03"=Boleta, etc.).
+    /// </summary>
+    Task<(string? CodigoSunatRespuesta, string? EstadoSunat, string? CodigoSunatDocumento)>
+        BuscarCodigoSunatVentaAsync(int idVenta, CancellationToken ct);
     Task InsVentaXmlLogAsync(int idVenta, string nombreXml, string nombreZip, int resultado, CancellationToken ct);
     Task UpdVentaArchivoXmlAsync(int idVenta, byte[] xmlBytes, string nombreXml, byte[]? cdrBytes, string? nombreCdr, string usuario, CancellationToken ct);
     Task UpdEstadoFacturaElectronicaAsync(int idVenta, string codigoSunat, string estadoSunat, string estado, CancellationToken ct);

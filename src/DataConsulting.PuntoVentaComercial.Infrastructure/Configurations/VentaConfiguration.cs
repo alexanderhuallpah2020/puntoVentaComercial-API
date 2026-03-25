@@ -33,6 +33,8 @@ public sealed class VentaConfiguration : IEntityTypeConfiguration<Venta>
         builder.Property(x => x.FechaEmision).HasColumnType("smalldatetime").IsRequired();
         builder.Property(x => x.FechaProceso).HasColumnType("smalldatetime").IsRequired();
         builder.Property(x => x.Estado).HasMaxLength(1).IsFixedLength().IsRequired();
+        builder.Property(x => x.CodigoSunat).HasMaxLength(5).IsUnicode(false);
+        builder.Property(x => x.EstadoSunat).HasMaxLength(250).IsUnicode(false);
 
         builder.Property(x => x.IdTipoMoneda).HasColumnType("smallint").IsRequired();
         builder.Property(x => x.TipoCambio).HasColumnType("smallmoney").IsRequired();

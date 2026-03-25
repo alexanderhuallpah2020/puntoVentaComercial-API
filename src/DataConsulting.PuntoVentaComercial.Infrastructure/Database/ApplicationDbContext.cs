@@ -1,6 +1,7 @@
 ﻿using DataConsulting.PuntoVentaComercial.Application.Abstractions.Data;
 using DataConsulting.PuntoVentaComercial.Domain.Clientes;
 using DataConsulting.PuntoVentaComercial.Domain.CuentasPendientes;
+using DataConsulting.PuntoVentaComercial.Domain.Documentos;
 using DataConsulting.PuntoVentaComercial.Domain.DocumentosIdentidad;
 using DataConsulting.PuntoVentaComercial.Domain.OperacionesPago;
 using DataConsulting.PuntoVentaComercial.Domain.Paises;
@@ -18,6 +19,7 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
     {
     }
 
+    public DbSet<Documento> Documentos { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<ClienteLocal> ClienteLocales { get; set; }
     public DbSet<DocumentoIdentidad> DocumentosIdentidad { get; set; }

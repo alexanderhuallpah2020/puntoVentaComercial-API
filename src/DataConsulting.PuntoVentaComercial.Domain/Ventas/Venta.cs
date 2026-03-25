@@ -21,6 +21,8 @@ public sealed class Venta : Entity
     public DateTime FechaEmision { get; private set; }
     public DateTime FechaProceso { get; private set; }
     public string Estado { get; private set; } = default!;
+    public string? CodigoSunat { get; private set; }   // respuesta SUNAT: "0" = aceptado
+    public string? EstadoSunat { get; private set; }   // descripción de la respuesta SUNAT
     public short IdTipoMoneda { get; private set; }
     public decimal TipoCambio { get; private set; }
     public decimal ValorNeto { get; private set; }

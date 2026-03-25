@@ -85,12 +85,22 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
         return result.FirstOrDefault();
     }
 
-    public async Task<string?> BuscarCodigoSunatAsync(int idVenta, CancellationToken ct)
+    public async Task<(string? CodigoSunatRespuesta, string? EstadoSunat, string? CodigoSunatDocumento)>
+        BuscarCodigoSunatVentaAsync(int idVenta, CancellationToken ct)
     {
-        var result = await DbContext.Database
-            .SqlQuery<string?>($"EXEC dbo.BuscarCodigoSunat {idVenta}")
-            .ToListAsync(ct);
-        return result.FirstOrDefault();
+        var row = await (
+            from v in DbContext.Ventas.AsNoTracking()
+            join d in DbContext.Documentos.AsNoTracking() on v.IdTipoDocumento equals d.IdTipoDocumento
+            where v.Id == idVenta
+            select new
+            {
+                CodigoSunatRespuesta = v.CodigoSunat,
+                v.EstadoSunat,
+                CodigoSunatDocumento = d.CodigoSunat
+            }
+        ).FirstOrDefaultAsync(ct);
+
+        return (row?.CodigoSunatRespuesta, row?.EstadoSunat, row?.CodigoSunatDocumento);
     }
 
     public async Task InsVentaXmlLogAsync(
