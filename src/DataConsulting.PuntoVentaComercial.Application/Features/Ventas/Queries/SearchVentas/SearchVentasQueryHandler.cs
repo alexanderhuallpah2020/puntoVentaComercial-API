@@ -24,11 +24,11 @@ internal sealed class SearchVentasQueryHandler(IVentaRepository repository)
 
         var response = new SearchVentasResponse(
             items.Select(v => new SearchVentasItemResponse(
-                v.Id,
+                v.IdVenta,
                 v.IdTipoDocumento,
                 v.NumSerieA,
                 v.NumeroDocumentoA,
-                v.Emision?.ClienteNombre ?? String.Empty,
+                v.ClienteNombre,
                 v.Vendedor,
                 v.FechaEmision,
                 v.Estado,

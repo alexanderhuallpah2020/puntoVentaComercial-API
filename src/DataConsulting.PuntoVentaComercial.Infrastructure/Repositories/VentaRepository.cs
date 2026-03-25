@@ -13,7 +13,7 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
             .Include(x => x.Pagos)
             .FirstOrDefaultAsync(x => x.Id == idVenta, ct);
 
-    public async Task<(IList<Venta> Items, int Total)> SearchAsync(
+    public async Task<(IList<VentaSearchResultDto> Items, int Total)> SearchAsync(
         DateTime? fechaDesde,
         DateTime? fechaHasta,
         string? nombreCliente,
@@ -25,36 +25,51 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
         int pageSize,
         CancellationToken ct)
     {
-        var query = DbContext.Ventas
-            .Include(x => x.Emision)
-            .AsNoTracking();
+        var query =
+            from v in DbContext.Ventas.AsNoTracking()
+            join c in DbContext.Clientes.AsNoTracking() on v.IdCliente equals c.Id
+            select new { Venta = v, ClienteNombre = c.Nombre };
 
         if (fechaDesde.HasValue)
-            query = query.Where(x => x.FechaEmision >= fechaDesde.Value);
+            query = query.Where(x => x.Venta.FechaEmision >= fechaDesde.Value);
 
         if (fechaHasta.HasValue)
-            query = query.Where(x => x.FechaEmision < fechaHasta.Value.Date.AddDays(1));
+            query = query.Where(x => x.Venta.FechaEmision < fechaHasta.Value.Date.AddDays(1));
 
         if (!string.IsNullOrWhiteSpace(nombreCliente))
-            query = query.Where(x => x.Emision!.ClienteNombre.Contains(nombreCliente));
+            query = query.Where(x => x.ClienteNombre.Contains(nombreCliente));
 
         if (!string.IsNullOrWhiteSpace(numSerieA))
-            query = query.Where(x => x.NumSerieA == numSerieA);
+            query = query.Where(x => x.Venta.NumSerieA == numSerieA);
 
         if (numDocumento.HasValue)
-            query = query.Where(x => x.NumeroDocumento == numDocumento.Value);
+        {
+            string numDocumentoA = numDocumento.Value.ToString("D6");
+            query = query.Where(x => x.Venta.NumeroDocumentoA == numDocumentoA);
+        }
 
         if (idTipoDocumento.HasValue)
-            query = query.Where(x => x.IdTipoDocumento == idTipoDocumento.Value);
+            query = query.Where(x => x.Venta.IdTipoDocumento == idTipoDocumento.Value);
 
         if (!string.IsNullOrWhiteSpace(estado))
-            query = query.Where(x => x.Estado == estado);
+            query = query.Where(x => x.Venta.Estado == estado);
 
         int total = await query.CountAsync(ct);
+
         var items = await query
-            .OrderByDescending(x => x.FechaEmision)
+            .OrderByDescending(x => x.Venta.FechaEmision)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Select(x => new VentaSearchResultDto(
+                x.Venta.Id,
+                x.Venta.IdTipoDocumento,
+                x.Venta.NumSerieA,
+                x.Venta.NumeroDocumentoA,
+                x.ClienteNombre,
+                x.Venta.Vendedor,
+                x.Venta.FechaEmision,
+                x.Venta.Estado,
+                x.Venta.ImporteTotal))
             .ToListAsync(ct);
 
         return (items, total);

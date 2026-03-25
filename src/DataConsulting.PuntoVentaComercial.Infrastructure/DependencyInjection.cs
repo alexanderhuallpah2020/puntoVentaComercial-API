@@ -40,8 +40,7 @@ namespace DataConsulting.PuntoVentaComercial.Infrastructure
             .WithScopedLifetime());
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
-            services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
-            services.AddScoped<ISunatClientLookupService, SunatClientLookupStub>();
+services.AddScoped<ISunatClientLookupService, SunatClientLookupStub>();
             services.AddScoped<IStockMovementService, StockMovementService>();
             services.AddScoped<IPoliticService, PoliticService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();

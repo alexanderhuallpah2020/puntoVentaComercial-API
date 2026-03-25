@@ -3,7 +3,7 @@ namespace DataConsulting.PuntoVentaComercial.Domain.Ventas;
 public interface IVentaRepository
 {
     Task<Venta?> GetByIdAsync(int idVenta, CancellationToken ct);
-    Task<(IList<Venta> Items, int Total)> SearchAsync(
+    Task<(IList<VentaSearchResultDto> Items, int Total)> SearchAsync(
         DateTime? fechaDesde,
         DateTime? fechaHasta,
         string? nombreCliente,

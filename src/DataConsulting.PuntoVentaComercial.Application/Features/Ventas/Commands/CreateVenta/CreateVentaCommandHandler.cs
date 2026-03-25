@@ -175,7 +175,8 @@ internal sealed class CreateVentaCommandHandler(
                 secuencia: 1,
                 idFormaPago: request.IdFormaPago,
                 idTipoMoneda: request.IdTipoMoneda,
-                importe: request.ImporteTotal);
+                importe: request.ImporteTotal,
+                numReferencia: "");
 
             var amortizacion = CuentaAmortizacion.Create(
                 idEmpresa: request.IdEmpresa,
