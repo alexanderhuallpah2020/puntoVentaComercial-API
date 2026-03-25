@@ -22,13 +22,13 @@ public sealed class VentaPago
     {
         return new VentaPago
         {
-            IdFormaPago      = idFormaPago,
-            IdTipoMoneda     = idTipoMoneda,
-            Importe          = importe,
-            Estado           = 1,
-            UpdateToken      = 0,
+            IdFormaPago = idFormaPago,
+            IdTipoMoneda = idTipoMoneda,
+            Importe = importe,
+            Estado = 1,
+            UpdateToken = 0,
             IdUsuarioCreador = idUsuarioCreador,
-            FechaCreacion    = now
+            FechaCreacion = now
         };
     }
 }

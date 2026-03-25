@@ -50,40 +50,40 @@ public sealed class CuentaPendiente
     {
         return new CuentaPendiente
         {
-            IdEmpresa        = idEmpresa,
-            TipoOperacion    = tipoOperacion,
-            IdOperacion      = idOperacion,
-            Secuencia        = secuencia,
-            IdTipoMoneda     = idTipoMoneda,
-            Importe          = importe,
-            Saldo            = importe,           // saldo inicial = importe total
-            FechaPago        = fechaPago,
-            Estado           = 1,
-            IdEntidad        = idEntidad,
-            Descuentos       = 0,
-            Retenciones      = 0,
-            SaldoRetencion   = 0,
-            UpdateToken      = 0,
-            Detracciones     = 0,
-            SaldoDetraccion  = 0,
-            FlagTipo         = flagTipo,
-            MontoInteres     = 0,
-            Glosa            = glosa,
-            FlagFacturado    = 1,
-            IdTipoDocumento  = idTipoDocumento,
-            Percepciones     = 0,
-            SaldoPercepcion  = 0,
-            IdOperacionRef   = null,
-            FlagInicial      = 1,
-            FlagLiquidado    = 0,
-            UsuarioCreador   = usuarioCreador,
-            FechaCreacion    = now
+            IdEmpresa = idEmpresa,
+            TipoOperacion = tipoOperacion,
+            IdOperacion = idOperacion,
+            Secuencia = secuencia,
+            IdTipoMoneda = idTipoMoneda,
+            Importe = importe,
+            Saldo = importe,           // saldo inicial = importe total
+            FechaPago = fechaPago,
+            Estado = 1,
+            IdEntidad = idEntidad,
+            Descuentos = 0,
+            Retenciones = 0,
+            SaldoRetencion = 0,
+            UpdateToken = 0,
+            Detracciones = 0,
+            SaldoDetraccion = 0,
+            FlagTipo = flagTipo,
+            MontoInteres = 0,
+            Glosa = glosa,
+            FlagFacturado = 1,
+            IdTipoDocumento = idTipoDocumento,
+            Percepciones = 0,
+            SaldoPercepcion = 0,
+            IdOperacionRef = null,
+            FlagInicial = 1,
+            FlagLiquidado = 0,
+            UsuarioCreador = usuarioCreador,
+            FechaCreacion = now
         };
     }
 
     public void MarcarLiquidado(string usuarioModificador)
     {
-        Saldo         = 0;
+        Saldo = 0;
         FlagLiquidado = 1;
     }
 }

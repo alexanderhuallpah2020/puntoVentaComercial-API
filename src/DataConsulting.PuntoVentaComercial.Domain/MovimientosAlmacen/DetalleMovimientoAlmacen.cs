@@ -37,18 +37,18 @@ public sealed class DetalleMovimientoAlmacen
     {
         return new DetalleMovimientoAlmacen
         {
-            Correlativo          = correlativo,
-            CorrelativoRef       = correlativoRef,
-            IdArticulo           = idArticulo,
-            IdLocacion           = idLocacion,
-            IdUnidad             = idUnidad,
-            Cantidad             = cantidad,
-            CostoBase            = costoBase,
-            CostoAdicional       = costoAdicional,
-            CostoArticulo        = costoArticulo,
-            CostoPromedio        = costoPromedio,
-            CostoUtilidadSinIGV  = 0m,
-            FechaCreacion        = DateTime.Now,
+            Correlativo = correlativo,
+            CorrelativoRef = correlativoRef,
+            IdArticulo = idArticulo,
+            IdLocacion = idLocacion,
+            IdUnidad = idUnidad,
+            Cantidad = cantidad,
+            CostoBase = costoBase,
+            CostoAdicional = costoAdicional,
+            CostoArticulo = costoArticulo,
+            CostoPromedio = costoPromedio,
+            CostoUtilidadSinIGV = 0m,
+            FechaCreacion = DateTime.Now,
         };
     }
 }

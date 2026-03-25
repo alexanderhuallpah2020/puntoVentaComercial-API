@@ -26,22 +26,22 @@ public sealed class OperacionPagoDetalle
         short idFormaPago,
         short idTipoMoneda,
         decimal importe,
-        string numReferencia = "")
+        string numReferencia)
     {
         return new OperacionPagoDetalle
         {
-            IdEmpresa              = idEmpresa,
-            TipoOperacion          = tipoOperacion,
-            NroOperacion           = nroOperacion,
-            Secuencia              = secuencia,
-            IdFormaPago            = idFormaPago,
-            IdTipoMoneda           = idTipoMoneda,
-            Importe                = importe,
-            IdDocumentoRef         = null,
-            SecuenciaRef           = null,
-            Estado                 = 1,
-            NumReferencia          = numReferencia,
-            SecuenciaEntidadRef    = null,
+            IdEmpresa = idEmpresa,
+            TipoOperacion = tipoOperacion,
+            NroOperacion = nroOperacion,
+            Secuencia = secuencia,
+            IdFormaPago = idFormaPago,
+            IdTipoMoneda = idTipoMoneda,
+            Importe = importe,
+            IdDocumentoRef = null,
+            SecuenciaRef = null,
+            Estado = 1,
+            NumReferencia = numReferencia,
+            SecuenciaEntidadRef = null,
             IdOperacionPagoTributo = null
         };
     }

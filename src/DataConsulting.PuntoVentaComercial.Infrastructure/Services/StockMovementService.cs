@@ -125,7 +125,7 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
             WHERE IdTipoDocumento = @td AND IdSucursal = @s AND Estado = 'A'
             """;
         var p1 = cmd.CreateParameter(); p1.ParameterName = "@td"; p1.Value = (short)EDocumento.GuiaInternaSalida;
-        var p2 = cmd.CreateParameter(); p2.ParameterName = "@s";  p2.Value = idSucursal;
+        var p2 = cmd.CreateParameter(); p2.ParameterName = "@s"; p2.Value = idSucursal;
         cmd.Parameters.Add(p1); cmd.Parameters.Add(p2);
         var result = await cmd.ExecuteScalarAsync(ct);
         return result is DBNull || result is null ? (short)0 : Convert.ToInt16(result);
@@ -140,10 +140,10 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
         cmd.Transaction = tx;
         cmd.CommandType = System.Data.CommandType.StoredProcedure;
         cmd.CommandText = "dbo.GetNuevoCorrelativoDocumento";
-        var p1 = cmd.CreateParameter(); p1.ParameterName = "@IdSucursal";      p1.Value = idSucursal;
+        var p1 = cmd.CreateParameter(); p1.ParameterName = "@IdSucursal"; p1.Value = idSucursal;
         var p2 = cmd.CreateParameter(); p2.ParameterName = "@IdTipoDocumento"; p2.Value = (short)idTipoDocumento;
-        var p3 = cmd.CreateParameter(); p3.ParameterName = "@NumSerie";        p3.Value = numSerie;
-        var p4 = cmd.CreateParameter(); p4.ParameterName = "@NumSerieA";       p4.Value = string.Empty;
+        var p3 = cmd.CreateParameter(); p3.ParameterName = "@NumSerie"; p3.Value = numSerie;
+        var p4 = cmd.CreateParameter(); p4.ParameterName = "@NumSerieA"; p4.Value = string.Empty;
         cmd.Parameters.Add(p1); cmd.Parameters.Add(p2);
         cmd.Parameters.Add(p3); cmd.Parameters.Add(p4);
         var result = await cmd.ExecuteScalarAsync(ct);
@@ -183,7 +183,7 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
             """;
         var p1 = cmd.CreateParameter(); p1.ParameterName = "@loc"; p1.Value = idLocacion;
         var p2 = cmd.CreateParameter(); p2.ParameterName = "@art"; p2.Value = idArticulo;
-        var p3 = cmd.CreateParameter(); p3.ParameterName = "@un";  p3.Value = idUnidad;
+        var p3 = cmd.CreateParameter(); p3.ParameterName = "@un"; p3.Value = idUnidad;
         cmd.Parameters.Add(p1); cmd.Parameters.Add(p2); cmd.Parameters.Add(p3);
         var result = await cmd.ExecuteScalarAsync(ct);
         return result is DBNull || result is null ? 0m : Convert.ToDecimal(result);
@@ -206,20 +206,20 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
         { var p = cmd.CreateParameter(); p.ParameterName = name; p.Value = value; cmd.Parameters.Add(p); }
 
         Add("@IdTipoTransferencia", (int)ETipoTransferencia.Venta);
-        Add("@IdTipoDocumento",     (short)EDocumento.GuiaInternaSalida);
-        Add("@NumSerieT",           numSerie);
-        Add("@NumDocumentoT",       numDocumento);
-        Add("@IdSucursal",          (int)idSucursal);
-        Add("@FechaDocumento",      hoy);
-        Add("@FechaMovimiento",     hoy);
-        Add("@EstadoTransaccion",   "A");
-        Add("@Comentario",          string.Empty);
-        Add("@IdEntidadRef",        idCliente);
-        Add("@TipoEntidad",         (byte)ETipoEntidad.Cliente);
-        Add("@IdLocacion",          idLocacion);
-        Add("@IdInventario",        0);
-        Add("@Usuario",             "admin");
-        Add("@IdUsuario",           DBNull.Value);
+        Add("@IdTipoDocumento", (short)EDocumento.GuiaInternaSalida);
+        Add("@NumSerieT", numSerie);
+        Add("@NumDocumentoT", numDocumento);
+        Add("@IdSucursal", (int)idSucursal);
+        Add("@FechaDocumento", hoy);
+        Add("@FechaMovimiento", hoy);
+        Add("@EstadoTransaccion", "A");
+        Add("@Comentario", string.Empty);
+        Add("@IdEntidadRef", idCliente);
+        Add("@TipoEntidad", (byte)ETipoEntidad.Cliente);
+        Add("@IdLocacion", idLocacion);
+        Add("@IdInventario", 0);
+        Add("@Usuario", "admin");
+        Add("@IdUsuario", DBNull.Value);
 
         var outParam = cmd.CreateParameter();
         outParam.ParameterName = "@IdMovimientoAlmacen";
@@ -247,19 +247,19 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
         { var p = cmd.CreateParameter(); p.ParameterName = name; p.Value = value; cmd.Parameters.Add(p); }
 
         Add("@IdMovimientoAlmacen", idMovimientoAlmacen);
-        Add("@Correlativo",         correlativo);
-        Add("@CorrelativoRef",      (short)0);
-        Add("@IdArticulo",          d.IdArticulo);
-        Add("@IdLocacion",          idLocacion);
-        Add("@IdUnidad",            d.IdUnidad);
-        Add("@Cantidad",            d.Cantidad);
-        Add("@StockAnterior",       stockAnterior);
-        Add("@StockActual",         stockActual);
-        Add("@CostoBase",           costoPromedio);
-        Add("@CostoAdicional",      0m);
-        Add("@CostoArticulo",       costoPromedio);
-        Add("@CostoPromedio",       costoPromedio);
-        Add("@IdUsuario",           DBNull.Value);
+        Add("@Correlativo", correlativo);
+        Add("@CorrelativoRef", (short)0);
+        Add("@IdArticulo", d.IdArticulo);
+        Add("@IdLocacion", idLocacion);
+        Add("@IdUnidad", d.IdUnidad);
+        Add("@Cantidad", d.Cantidad);
+        Add("@StockAnterior", stockAnterior);
+        Add("@StockActual", stockActual);
+        Add("@CostoBase", costoPromedio);
+        Add("@CostoAdicional", 0m);
+        Add("@CostoArticulo", costoPromedio);
+        Add("@CostoPromedio", costoPromedio);
+        Add("@IdUsuario", DBNull.Value);
 
         await cmd.ExecuteNonQueryAsync(ct);
     }
@@ -278,11 +278,11 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
         void Add(string name, object value)
         { var p = cmd.CreateParameter(); p.ParameterName = name; p.Value = value; cmd.Parameters.Add(p); }
 
-        Add("@IdLocacion",    idLocacion);
-        Add("@IdArticulo",    idArticulo);
-        Add("@Stock",         stock);
+        Add("@IdLocacion", idLocacion);
+        Add("@IdArticulo", idArticulo);
+        Add("@Stock", stock);
         Add("@CostoPromedio", costoPromedio);
-        Add("@IdUnidad",      idUnidad);
+        Add("@IdUnidad", idUnidad);
 
         await cmd.ExecuteNonQueryAsync(ct);
     }
@@ -304,67 +304,67 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
         void Add(string name, object value)
         { var p = cmd.CreateParameter(); p.ParameterName = name; p.Value = value; cmd.Parameters.Add(p); }
 
-        Add("@IdEmpresa",          (int)idEmpresa);
-        Add("@IdSucursal",         (int)idSucursal);
-        Add("@NroSecuencia",       0);
-        Add("@IdTipoDocumento",    (int)EDocumento.GuiaInternaSalida);
-        Add("@NumSerie",           (int)numSerie);
-        Add("@NumDocumento",       numDocumento);
-        Add("@FechaTraslado",      hoy);
-        Add("@FechaIngreso",       hoy);
-        Add("@TipoEntidad",        (byte)ETipoEntidad.Cliente);
-        Add("@IdCliente",          idCliente);
-        Add("@IdLocalDespacho",    DBNull.Value);
-        Add("@IdProveedor",        DBNull.Value);
-        Add("@IdMotivoGuia",       (int)ETipoTransferencia.Venta);
-        Add("@PuntoPartida",       puntoPartida);
-        Add("@PuntoLlegada",       string.Empty);
-        Add("@IdOrdenCompra",      DBNull.Value);
-        Add("@IdPedido",           DBNull.Value);
-        Add("@PesoTotal",          0m);
-        Add("@VolumenTotal",       0m);
-        Add("@IdMovAlmacen",       (int)idMovAlmacen);
-        Add("@IdMovAlmacenTran",   DBNull.Value);
-        Add("@Referencia",         string.Empty);
-        Add("@Observacion",        string.Empty);
-        Add("@Nota",               string.Empty);
-        Add("@Estado",             "A");
-        Add("@IdCompra",           DBNull.Value);
-        Add("@IdVentaRef",         idVenta);
-        Add("@IdGuiaRemisionRef",  DBNull.Value);
-        Add("@IdTrabajador",       (int)idVendedor);
-        Add("@IdVendedor",         (int)idVendedor);
-        Add("@IdTipoMoneda",       (int)idTipoMoneda);
-        Add("@ImporteTotal",       importeTotal);
-        Add("@IdProceso",          0);
-        Add("@TipoProceso",        (byte)0);
-        Add("@IdProceso2",         idVenta);
-        Add("@TipoProceso2",       (byte)ETipoProceso.Venta);
-        Add("@IdProceso3",         0);
-        Add("@TipoProceso3",       (byte)0);
-        Add("@FlagDocumentoRef",   (byte)0);
-        Add("@IdLocacion",         idLocacion);
-        Add("@IdLocacionRef",      DBNull.Value);
-        Add("@IdSucursalRef",      DBNull.Value);
-        Add("@IdCentroCosto",      DBNull.Value);
-        Add("@NumProyecto",        DBNull.Value);
-        Add("@NombreReferencia",   string.Empty);
-        Add("@UpdateToken",        (byte)0);
-        Add("@Usuario",            "admin");
-        Add("@CantidadSalida",     0m);
-        Add("@CantidadMerma",      0m);
-        Add("@FlagGratuito",       (byte)0);
-        Add("@IdUsuario",          DBNull.Value);
-        Add("@TipoEntidadRef",     DBNull.Value);
-        Add("@IdClienteRef",       DBNull.Value);
-        Add("@IdProveedorRef",     DBNull.Value);
-        Add("@IdTrabajadorRef",    DBNull.Value);
-        Add("@IdSucursalRef2",     DBNull.Value);
-        Add("@IdAgenciaAduana",    DBNull.Value);
-        Add("@NumSerieA",          string.Empty);
-        Add("@NumDocumentoA",      string.Empty);
-        Add("@IndicadorSunat",     string.Empty);
-        Add("@Otros",              string.Empty);
+        Add("@IdEmpresa", (int)idEmpresa);
+        Add("@IdSucursal", (int)idSucursal);
+        Add("@NroSecuencia", 0);
+        Add("@IdTipoDocumento", (int)EDocumento.GuiaInternaSalida);
+        Add("@NumSerie", (int)numSerie);
+        Add("@NumDocumento", numDocumento);
+        Add("@FechaTraslado", hoy);
+        Add("@FechaIngreso", hoy);
+        Add("@TipoEntidad", (byte)ETipoEntidad.Cliente);
+        Add("@IdCliente", idCliente);
+        Add("@IdLocalDespacho", DBNull.Value);
+        Add("@IdProveedor", DBNull.Value);
+        Add("@IdMotivoGuia", (int)ETipoTransferencia.Venta);
+        Add("@PuntoPartida", puntoPartida);
+        Add("@PuntoLlegada", string.Empty);
+        Add("@IdOrdenCompra", DBNull.Value);
+        Add("@IdPedido", DBNull.Value);
+        Add("@PesoTotal", 0m);
+        Add("@VolumenTotal", 0m);
+        Add("@IdMovAlmacen", (int)idMovAlmacen);
+        Add("@IdMovAlmacenTran", DBNull.Value);
+        Add("@Referencia", string.Empty);
+        Add("@Observacion", string.Empty);
+        Add("@Nota", string.Empty);
+        Add("@Estado", "A");
+        Add("@IdCompra", DBNull.Value);
+        Add("@IdVentaRef", idVenta);
+        Add("@IdGuiaRemisionRef", DBNull.Value);
+        Add("@IdTrabajador", (int)idVendedor);
+        Add("@IdVendedor", (int)idVendedor);
+        Add("@IdTipoMoneda", (int)idTipoMoneda);
+        Add("@ImporteTotal", importeTotal);
+        Add("@IdProceso", 0);
+        Add("@TipoProceso", (byte)0);
+        Add("@IdProceso2", idVenta);
+        Add("@TipoProceso2", (byte)ETipoProceso.Venta);
+        Add("@IdProceso3", 0);
+        Add("@TipoProceso3", (byte)0);
+        Add("@FlagDocumentoRef", (byte)0);
+        Add("@IdLocacion", idLocacion);
+        Add("@IdLocacionRef", DBNull.Value);
+        Add("@IdSucursalRef", DBNull.Value);
+        Add("@IdCentroCosto", DBNull.Value);
+        Add("@NumProyecto", DBNull.Value);
+        Add("@NombreReferencia", string.Empty);
+        Add("@UpdateToken", (byte)0);
+        Add("@Usuario", "admin");
+        Add("@CantidadSalida", 0m);
+        Add("@CantidadMerma", 0m);
+        Add("@FlagGratuito", (byte)0);
+        Add("@IdUsuario", DBNull.Value);
+        Add("@TipoEntidadRef", DBNull.Value);
+        Add("@IdClienteRef", DBNull.Value);
+        Add("@IdProveedorRef", DBNull.Value);
+        Add("@IdTrabajadorRef", DBNull.Value);
+        Add("@IdSucursalRef2", DBNull.Value);
+        Add("@IdAgenciaAduana", DBNull.Value);
+        Add("@NumSerieA", string.Empty);
+        Add("@NumDocumentoA", string.Empty);
+        Add("@IndicadorSunat", string.Empty);
+        Add("@Otros", string.Empty);
         // @CodigoQR es varbinary(max) — necesita tipo explícito para evitar error de conversión nvarchar
         var pQR = cmd.CreateParameter();
         pQR.ParameterName = "@CodigoQR";
@@ -403,32 +403,32 @@ internal sealed class StockMovementService(ApplicationDbContext dbContext) : ISt
         void Add(string name, object value)
         { var p = cmd.CreateParameter(); p.ParameterName = name; p.Value = value; cmd.Parameters.Add(p); }
 
-        Add("@IdGuiaRemision",          idGuiaRemision);
-        Add("@CorrelativoGuia",         correlativoGuia);
-        Add("@IdArticulo",              d.IdArticulo);
-        Add("@IdUnidad",                d.IdUnidad);
-        Add("@Cantidad",                d.Cantidad);
-        Add("@CantidadRec",             0m);
-        Add("@CostoBase",               costoPromedio);
-        Add("@CostoAdicional",          0m);
-        Add("@CostoUnd",                costoPromedio);
-        Add("@Peso",                    0m);
-        Add("@IGV",                     false);
-        Add("@CorrelativoPedido",       DBNull.Value);
-        Add("@CorrelativoDoc",          correlativoVenta);
-        Add("@PrecioUnd",               d.PrecioUnitario);
-        Add("@IdConcepto",              DBNull.Value);   // FK_DetalleGuiaRemision_Articulo — no aplica en POS
-        Add("@PesoFinal",               DBNull.Value);
-        Add("@IdSerie",                 DBNull.Value);
-        Add("@Descripcion",             string.Empty);
-        Add("@Observacion",             string.Empty);
-        Add("@IdMotivoTransferencia",   DBNull.Value);   // FK a TablaMaestra — no aplica en POS
-        Add("@CantidadTransferencia",   0m);
-        Add("@TextoSerie",              DBNull.Value);
-        Add("@Anio",                    DBNull.Value);   // FK compuesta (Anio, IdEmpresa, IdCentroCosto) — sin centro costo en POS
-        Add("@IdEmpresa",               DBNull.Value);
-        Add("@IdCentroCosto",           DBNull.Value);
-        Add("@IdUsuario",               DBNull.Value);
+        Add("@IdGuiaRemision", idGuiaRemision);
+        Add("@CorrelativoGuia", correlativoGuia);
+        Add("@IdArticulo", d.IdArticulo);
+        Add("@IdUnidad", d.IdUnidad);
+        Add("@Cantidad", d.Cantidad);
+        Add("@CantidadRec", 0m);
+        Add("@CostoBase", costoPromedio);
+        Add("@CostoAdicional", 0m);
+        Add("@CostoUnd", costoPromedio);
+        Add("@Peso", 0m);
+        Add("@IGV", false);
+        Add("@CorrelativoPedido", DBNull.Value);
+        Add("@CorrelativoDoc", correlativoVenta);
+        Add("@PrecioUnd", d.PrecioUnitario);
+        Add("@IdConcepto", DBNull.Value);   // FK_DetalleGuiaRemision_Articulo — no aplica en POS
+        Add("@PesoFinal", DBNull.Value);
+        Add("@IdSerie", DBNull.Value);
+        Add("@Descripcion", string.Empty);
+        Add("@Observacion", string.Empty);
+        Add("@IdMotivoTransferencia", DBNull.Value);   // FK a TablaMaestra — no aplica en POS
+        Add("@CantidadTransferencia", 0m);
+        Add("@TextoSerie", DBNull.Value);
+        Add("@Anio", DBNull.Value);   // FK compuesta (Anio, IdEmpresa, IdCentroCosto) — sin centro costo en POS
+        Add("@IdEmpresa", DBNull.Value);
+        Add("@IdCentroCosto", DBNull.Value);
+        Add("@IdUsuario", DBNull.Value);
 
         await cmd.ExecuteNonQueryAsync(ct);
     }

@@ -44,20 +44,20 @@ public sealed class MovimientoAlmacen
         var movimiento = new MovimientoAlmacen
         {
             IdTipoTransferencia = idTipoTransferencia,
-            IdTipoDocumento     = idTipoDocumento,
-            NumSerieT           = numSerieT,
-            NumDocumentoT       = numDocumentoT,
-            IdSucursal          = idSucursal,
-            FechaDocumento      = fecha.Date,   // fn_supress_time_dt → solo fecha
-            FechaMovimiento     = fecha.Date,
-            EstadoTransaccion   = estadoTransaccion,
-            Comentario          = comentario,
-            UsuarioCreador      = usuarioCreador,
-            FechaCreacion       = DateTime.Now,
-            IdEntidadRef        = idEntidadRef,
-            TipoEntidad         = tipoEntidad,
-            IdLocacion          = idLocacion,
-            IdInventario        = idInventario,
+            IdTipoDocumento = idTipoDocumento,
+            NumSerieT = numSerieT,
+            NumDocumentoT = numDocumentoT,
+            IdSucursal = idSucursal,
+            FechaDocumento = fecha.Date,   // fn_supress_time_dt → solo fecha
+            FechaMovimiento = fecha.Date,
+            EstadoTransaccion = estadoTransaccion,
+            Comentario = comentario,
+            UsuarioCreador = usuarioCreador,
+            FechaCreacion = DateTime.Now,
+            IdEntidadRef = idEntidadRef,
+            TipoEntidad = tipoEntidad,
+            IdLocacion = idLocacion,
+            IdInventario = idInventario,
         };
 
         foreach (var detalle in detalles)

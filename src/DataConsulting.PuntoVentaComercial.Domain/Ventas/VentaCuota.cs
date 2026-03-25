@@ -19,11 +19,11 @@ public sealed class VentaCuota
     {
         return new VentaCuota
         {
-            Correlativo  = correlativo,
-            FechaCuota   = fechaCuota,
-            Monto        = monto,
-            NumeroCuota  = numeroCuota,
-            Glosa        = null
+            Correlativo = correlativo,
+            FechaCuota = fechaCuota,
+            Monto = monto,
+            NumeroCuota = numeroCuota,
+            Glosa = null
         };
     }
 }

@@ -14,8 +14,8 @@ internal sealed class CuentaPendienteRepository(ApplicationDbContext dbContext)
         short idEmpresa, int idVenta, short secuencia, CancellationToken ct) =>
         await dbContext.CuentasPendientes
             .FirstOrDefaultAsync(x =>
-                x.IdEmpresa     == idEmpresa  &&
-                x.TipoOperacion == 2          &&
-                x.IdOperacion   == idVenta    &&
-                x.Secuencia     == secuencia, ct);
+                x.IdEmpresa == idEmpresa &&
+                x.TipoOperacion == 2 &&
+                x.IdOperacion == idVenta &&
+                x.Secuencia == secuencia, ct);
 }

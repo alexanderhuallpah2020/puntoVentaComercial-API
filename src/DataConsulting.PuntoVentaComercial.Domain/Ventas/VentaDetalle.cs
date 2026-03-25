@@ -48,26 +48,26 @@ public sealed class VentaDetalle
 
         return new VentaDetalle
         {
-            Correlativo          = correlativo,
-            IdEmpresa            = idEmpresa,
-            IdArticulo           = idArticulo,
-            IdUnidad             = idUnidad,
-            DescripcionArticulo  = descripcionArticulo,
-            Cantidad             = cantidad,
-            PrecioUnitario       = precioUnitario,
-            ValorUnitario        = precioUnitario,
-            ValorVenta           = valorVenta,
-            ValorFacial          = cantidad * precioUnitario,
-            ImporteDescuento     = importeDescuento,
-            TipoDescuento        = tipoDescuento,
-            Igv                  = !flagExonerado,
-            FlagExonerado        = flagExonerado,
-            Isc                  = isc,
-            IdTipoAfectoIGV      = idTipoAfectoIGV,
-            ValorICBPER          = valorICBPER,
-            FlagRegalo           = flagRegalo,
-            IdUsuarioCreador     = idUsuarioCreador,
-            FechaCreacion        = now
+            Correlativo = correlativo,
+            IdEmpresa = idEmpresa,
+            IdArticulo = idArticulo,
+            IdUnidad = idUnidad,
+            DescripcionArticulo = descripcionArticulo,
+            Cantidad = cantidad,
+            PrecioUnitario = precioUnitario,
+            ValorUnitario = precioUnitario,
+            ValorVenta = valorVenta,
+            ValorFacial = cantidad * precioUnitario,
+            ImporteDescuento = importeDescuento,
+            TipoDescuento = tipoDescuento,
+            Igv = !flagExonerado,
+            FlagExonerado = flagExonerado,
+            Isc = isc,
+            IdTipoAfectoIGV = idTipoAfectoIGV,
+            ValorICBPER = valorICBPER,
+            FlagRegalo = flagRegalo,
+            IdUsuarioCreador = idUsuarioCreador,
+            FechaCreacion = now
         };
     }
 }

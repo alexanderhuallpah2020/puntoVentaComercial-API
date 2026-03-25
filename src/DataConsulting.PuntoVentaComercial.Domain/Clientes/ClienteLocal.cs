@@ -21,19 +21,19 @@ public sealed class ClienteLocal : Entity
         string direccionLocal,
         string? telefono1,
         short idSucursal) => new()
-    {
-        Id             = id,
-        IdLocalUnico   = idLocalUnico,
-        DireccionLocal = direccionLocal.Trim(),
-        Telefono1      = telefono1?.Trim(),
-        IdSucursal     = idSucursal,
-        IdTipoCliente  = (int)ECliente.Varios,
-        Estado         = "A"
-    };
+        {
+            Id = id,
+            IdLocalUnico = idLocalUnico,
+            DireccionLocal = direccionLocal.Trim(),
+            Telefono1 = telefono1?.Trim(),
+            IdSucursal = idSucursal,
+            IdTipoCliente = (int)ECliente.Varios,
+            Estado = "A"
+        };
 
     internal void Update(string direccionLocal, string? telefono1)
     {
         DireccionLocal = direccionLocal.Trim();
-        Telefono1      = telefono1?.Trim();
+        Telefono1 = telefono1?.Trim();
     }
 }

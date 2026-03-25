@@ -1,6 +1,5 @@
 ﻿using DataConsulting.PuntoVentaComercial.Application.Abstractions.Behaviors;
 using DataConsulting.PuntoVentaComercial.Application.Abstractions.Messaging;
-using DataConsulting.PuntoVentaComercial.Application.Services.ClasesSunat;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 

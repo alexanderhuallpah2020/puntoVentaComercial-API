@@ -28,7 +28,7 @@ internal sealed class SearchVentasQueryHandler(IVentaRepository repository)
                 v.IdTipoDocumento,
                 v.NumSerieA,
                 v.NumeroDocumentoA,
-                v.Emision?.ClienteNombre ?? "",
+                v.Emision?.ClienteNombre ?? String.Empty,
                 v.Vendedor,
                 v.FechaEmision,
                 v.Estado,

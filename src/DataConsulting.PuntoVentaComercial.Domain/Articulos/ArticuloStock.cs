@@ -25,10 +25,10 @@ public sealed class ArticuloStock
     {
         return new ArticuloStock
         {
-            IdLocacion    = idLocacion,
-            IdArticulo    = idArticulo,
-            IdUnidad      = idUnidad,
-            Stock         = stock,
+            IdLocacion = idLocacion,
+            IdArticulo = idArticulo,
+            IdUnidad = idUnidad,
+            Stock = stock,
             CostoPromedio = costoPromedio,
             FechaCreacion = DateTime.Now,
         };
@@ -37,8 +37,8 @@ public sealed class ArticuloStock
     /// <summary>Actualiza stock y costo promedio (registro ya existente).</summary>
     public void Update(decimal nuevoStock, decimal nuevoCostoPromedio)
     {
-        Stock                = nuevoStock;
-        CostoPromedio        = nuevoCostoPromedio;
-        FechaModificacion    = DateTime.Now;
+        Stock = nuevoStock;
+        CostoPromedio = nuevoCostoPromedio;
+        FechaModificacion = DateTime.Now;
     }
 }

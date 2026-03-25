@@ -28,18 +28,18 @@ public sealed class CuentaAmortizacion
     {
         return new CuentaAmortizacion
         {
-            IdEmpresa        = idEmpresa,
-            TipoOperacion    = tipoOperacion,
-            NroOperacion     = nroOperacion,
+            IdEmpresa = idEmpresa,
+            TipoOperacion = tipoOperacion,
+            NroOperacion = nroOperacion,
             TipoOperacionRef = tipoOperacionRef,
-            IdOperacion      = idOperacion,
-            Secuencia        = secuencia,
-            Importe          = importe,
-            Estado           = 1,
-            Retencion        = 0,
-            Descuento        = 0,
-            Detraccion       = 0,
-            Percepcion       = 0
+            IdOperacion = idOperacion,
+            Secuencia = secuencia,
+            Importe = importe,
+            Estado = 1,
+            Retencion = 0,
+            Descuento = 0,
+            Detraccion = 0,
+            Percepcion = 0
         };
     }
 }

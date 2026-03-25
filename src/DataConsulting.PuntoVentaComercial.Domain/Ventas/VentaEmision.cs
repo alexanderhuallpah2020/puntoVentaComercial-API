@@ -28,15 +28,15 @@ public sealed class VentaEmision
     {
         return new VentaEmision
         {
-            ClienteNombre           = clienteNombre,
-            ClienteDireccion        = clienteDireccion,
-            ClienteDocumento        = clienteDocumento,
-            Observacion             = observacion,
-            PuntosBonus             = puntosBonus,
-            Referencias             = referencias,
-            ClienteCodValidadorDoc  = clienteCodValidadorDoc,
-            IdUsuarioCreador        = idUsuarioCreador,
-            FechaCreacion           = now
+            ClienteNombre = clienteNombre,
+            ClienteDireccion = clienteDireccion,
+            ClienteDocumento = clienteDocumento,
+            Observacion = observacion,
+            PuntosBonus = puntosBonus,
+            Referencias = referencias,
+            ClienteCodValidadorDoc = clienteCodValidadorDoc,
+            IdUsuarioCreador = idUsuarioCreador,
+            FechaCreacion = now
         };
     }
 }

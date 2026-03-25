@@ -150,17 +150,17 @@ internal sealed class CreateVentaCommandHandler(
 
             // 2. INSERT CuentaPendiente (saldo inicial = ImporteTotal)
             var cuentaPendiente = CuentaPendiente.Create(
-                idEmpresa:      request.IdEmpresa,
-                tipoOperacion:  2,
-                idOperacion:    idVenta,
-                secuencia:      1,
-                idTipoMoneda:   request.IdTipoMoneda,
-                importe:        request.ImporteTotal,
-                fechaPago:      venta.FechaEmision,
-                idEntidad:      idEntidad,
+                idEmpresa: request.IdEmpresa,
+                tipoOperacion: 2,
+                idOperacion: idVenta,
+                secuencia: 1,
+                idTipoMoneda: request.IdTipoMoneda,
+                importe: request.ImporteTotal,
+                fechaPago: venta.FechaEmision,
+                idEntidad: idEntidad,
                 idTipoDocumento: request.IdTipoDocumento,
-                flagTipo:       1,
-                glosa:          "",
+                flagTipo: 1,
+                glosa: String.Empty,
                 usuarioCreador: usuario,
                 now);
 
@@ -169,41 +169,41 @@ internal sealed class CreateVentaCommandHandler(
 
             // 3. INSERT OperacionPago + OperacionPagoDetalle + CuentaAmortizacion
             var pagoDetalle = OperacionPagoDetalle.Create(
-                idEmpresa:     request.IdEmpresa,
+                idEmpresa: request.IdEmpresa,
                 tipoOperacion: 2,
-                nroOperacion:  nroOperacion,
-                secuencia:     1,
-                idFormaPago:   request.IdFormaPago,
-                idTipoMoneda:  request.IdTipoMoneda,
-                importe:       request.ImporteTotal);
+                nroOperacion: nroOperacion,
+                secuencia: 1,
+                idFormaPago: request.IdFormaPago,
+                idTipoMoneda: request.IdTipoMoneda,
+                importe: request.ImporteTotal);
 
             var amortizacion = CuentaAmortizacion.Create(
-                idEmpresa:        request.IdEmpresa,
-                tipoOperacion:    2,
-                nroOperacion:     nroOperacion,
+                idEmpresa: request.IdEmpresa,
+                tipoOperacion: 2,
+                nroOperacion: nroOperacion,
                 tipoOperacionRef: 2,
-                idOperacion:      idVenta,
-                secuencia:        1,
-                importe:          request.ImporteTotal);
+                idOperacion: idVenta,
+                secuencia: 1,
+                importe: request.ImporteTotal);
 
             var operacionPago = OperacionPago.Create(
-                idEmpresa:      request.IdEmpresa,
-                tipoOperacion:  2,
-                nroOperacion:   nroOperacion,
-                fechaEmision:   venta.FechaEmision,
-                idTipoMoneda:   request.IdTipoMoneda,
-                importeTotal:   request.ImporteTotal,
-                idSucursal:     request.IdSucursal,
-                idTrabajador:   request.IdVendedor,
-                idEstacion:     request.IdEstacionTrabajo,
-                tipoCambio:     request.TipoCambio,
-                idEntidad:      idEntidad,
-                observaciones:  "",
+                idEmpresa: request.IdEmpresa,
+                tipoOperacion: 2,
+                nroOperacion: nroOperacion,
+                fechaEmision: venta.FechaEmision,
+                idTipoMoneda: request.IdTipoMoneda,
+                importeTotal: request.ImporteTotal,
+                idSucursal: request.IdSucursal,
+                idTrabajador: request.IdVendedor,
+                idEstacion: request.IdEstacionTrabajo,
+                tipoCambio: request.TipoCambio,
+                idEntidad: idEntidad,
+                observaciones: String.Empty,
                 idTurnoAsistencia: null,
                 estadoContable: 1,
                 usuarioCreador: usuario,
                 now,
-                detalles:       [pagoDetalle],
+                detalles: [pagoDetalle],
                 amortizaciones: [amortizacion]);
 
             operacionPagoRepository.Add(operacionPago);

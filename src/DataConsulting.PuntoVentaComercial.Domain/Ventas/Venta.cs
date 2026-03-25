@@ -117,50 +117,50 @@ public sealed class Venta : Entity
 
         var venta = new Venta
         {
-            IdEmpresa                  = idEmpresa,
-            IdSucursal                 = idSucursal,
-            IdEstacionTrabajo          = idEstacionTrabajo,
-            IdSubSede                  = idSubSede,
-            IdTipoDocumento            = idTipoDocumento,
-            NumSerie                   = numSerie,
-            NumSerieA                  = numSerieA,
+            IdEmpresa = idEmpresa,
+            IdSucursal = idSucursal,
+            IdEstacionTrabajo = idEstacionTrabajo,
+            IdSubSede = idSubSede,
+            IdTipoDocumento = idTipoDocumento,
+            NumSerie = numSerie,
+            NumSerieA = numSerieA,
             // Series numéricas (NumSerie != null) → NumeroDocumento (INT)
             // Series alfanuméricas (NumSerieA)    → NumeroDocumentoA (VARCHAR, formato D6)
-            NumeroDocumento            = numSerie.HasValue ? numeroDocumento : null,
-            NumeroDocumentoA           = numSerie.HasValue ? null : numeroDocumento?.ToString("D6"),
-            NroCorrelativo             = nroCorrelativo,
-            IdCliente                  = idCliente,
-            IdTipoCliente              = idTipoCliente ?? 1, // 1 = Clientes Generales (default POS)
-            Vendedor                   = vendedor,
-            Vendedor2                  = vendedor2,
-            FechaEmision               = now,
-            FechaProceso               = now,
-            Estado                     = "A",
-            IdTipoMoneda               = idTipoMoneda,
-            TipoCambio                 = tipoCambio,
-            ValorNeto                  = valorNeto,
-            ImporteDescuento           = importeDescuento,
-            ImporteDescuentoGlobal     = importeDescuentoGlobal,
-            PorcentajeDescuentoGlobal  = porcentajeDescuentoGlobal,
-            ValorVenta                 = valorVenta,
-            Igv                        = igv,
-            ValorExonerado             = valorExonerado,
-            Isc                        = isc,
-            ValorICBPER                = valorICBPER,
-            ImporteTotal               = importeTotal,
-            ImportePagado              = importePagado,
-            ImporteVuelto              = importeVuelto,
-            RedondeoTotal              = redondeoTotal,
-            IdFormaPago                = idFormaPago,
-            IdSubdiario                = idSubdiario,
-            IdTurnoAsistencia          = idTurnoAsistencia,
-            IdTipoVenta                = 3,
-            FlagDescPorcentaje         = flagDescPorcentaje,
-            FlagPagoAdelantado         = 0,
-            FlagDetraccion             = 0,
-            UsuarioInsert              = usuarioCreador,
-            FechaInsert                = now,
-            UpdateToken                = 0
+            NumeroDocumento = numSerie.HasValue ? numeroDocumento : null,
+            NumeroDocumentoA = numSerie.HasValue ? null : numeroDocumento?.ToString("D6"),
+            NroCorrelativo = nroCorrelativo,
+            IdCliente = idCliente,
+            IdTipoCliente = idTipoCliente ?? 1, // 1 = Clientes Generales (default POS)
+            Vendedor = vendedor,
+            Vendedor2 = vendedor2,
+            FechaEmision = now,
+            FechaProceso = now,
+            Estado = "A",
+            IdTipoMoneda = idTipoMoneda,
+            TipoCambio = tipoCambio,
+            ValorNeto = valorNeto,
+            ImporteDescuento = importeDescuento,
+            ImporteDescuentoGlobal = importeDescuentoGlobal,
+            PorcentajeDescuentoGlobal = porcentajeDescuentoGlobal,
+            ValorVenta = valorVenta,
+            Igv = igv,
+            ValorExonerado = valorExonerado,
+            Isc = isc,
+            ValorICBPER = valorICBPER,
+            ImporteTotal = importeTotal,
+            ImportePagado = importePagado,
+            ImporteVuelto = importeVuelto,
+            RedondeoTotal = redondeoTotal,
+            IdFormaPago = idFormaPago,
+            IdSubdiario = idSubdiario,
+            IdTurnoAsistencia = idTurnoAsistencia,
+            IdTipoVenta = 3,
+            FlagDescPorcentaje = flagDescPorcentaje,
+            FlagPagoAdelantado = 0,
+            FlagDetraccion = 0,
+            UsuarioInsert = usuarioCreador,
+            FechaInsert = now,
+            UpdateToken = 0
         };
 
         foreach (var detalle in detalles)
@@ -191,9 +191,9 @@ public sealed class Venta : Entity
         if (Estado != "A")
             return Result.Failure(VentaErrors.EstadoInvalidoParaAnular);
 
-        Estado           = "E";
-        UsuarioUpdate    = usuarioModificador;
-        FechaUpdate      = now;
+        Estado = "E";
+        UsuarioUpdate = usuarioModificador;
+        FechaUpdate = now;
         UpdateToken++;
 
         return Result.Success();

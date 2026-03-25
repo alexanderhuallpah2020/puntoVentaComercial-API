@@ -40,17 +40,17 @@
 
     public enum ETipoEntidad : byte
     {
-        Almacen    = 0,
-        Empresa    = 1,
-        Proveedor  = 2,
-        Cliente    = 3,
+        Almacen = 0,
+        Empresa = 1,
+        Proveedor = 2,
+        Cliente = 3,
         Trabajador = 4
     }
 
     public enum ETipoOperacion : byte
     {
         Ingreso = 0,
-        Salida  = 1,
-        Todos   = 2
+        Salida = 1,
+        Todos = 2
     }
 }

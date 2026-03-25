@@ -67,25 +67,25 @@ public sealed class Cliente : Entity
 
         var cliente = new Cliente
         {
-            IdTipoCliente    = (int)ECliente.Varios,
-            Nombre           = nombre.Trim(),
-            NombreComercial  = nombre.Trim(),
+            IdTipoCliente = (int)ECliente.Varios,
+            Nombre = nombre.Trim(),
+            NombreComercial = nombre.Trim(),
             IdDocumentoIdentidad = idDocumentoIdentidad,
-            NumDocumento     = numDocumento?.Trim(),
-            CodValidadorDoc  = codValidadorDoc?.Trim() ?? "",
-            Observaciones    = String.Empty,
-            EstadoCliente    = "A",
-            FlagTipoCliente  = (int)ETipoCliente.ClienteLocal,
-            FlagSexo         = (byte)EFlagSexo.Empresa,
-            FlagOperacion    = 1,
-            FlagCertCalidad  = 0,
-            FlagCredito      = 0,
+            NumDocumento = numDocumento?.Trim(),
+            CodValidadorDoc = codValidadorDoc?.Trim() ?? String.Empty,
+            Observaciones = String.Empty,
+            EstadoCliente = "A",
+            FlagTipoCliente = (int)ETipoCliente.ClienteLocal,
+            FlagSexo = (byte)EFlagSexo.Empresa,
+            FlagOperacion = 1,
+            FlagCertCalidad = 0,
+            FlagCredito = 0,
             FlagTipoCalificacion = 0,
-            CreditoMaximo    = 0,
-            IdPais           = idPais,
-            FechaAlta        = DateTime.Now,
-            UsuarioCreador   = usuarioCreador,
-            FechaCreacion    = DateTime.Now
+            CreditoMaximo = 0,
+            IdPais = idPais,
+            FechaAlta = DateTime.Now,
+            UsuarioCreador = usuarioCreador,
+            FechaCreacion = DateTime.Now
         };
 
         var local = ClienteLocal.Create(idLocal, idLocalUnico, direccionLocal, telefono1, idSucursal);
@@ -113,14 +113,14 @@ public sealed class Cliente : Entity
         if (string.IsNullOrWhiteSpace(direccionLocal))
             return Result.Failure(ClienteErrors.DireccionRequerida);
 
-        Nombre               = nombre.Trim();
-        NombreComercial      = nombre.Trim();
+        Nombre = nombre.Trim();
+        NombreComercial = nombre.Trim();
         IdDocumentoIdentidad = idDocumentoIdentidad;
-        NumDocumento         = numDocumento?.Trim();
-        CodValidadorDoc      = codValidadorDoc?.Trim();
-        IdPais               = idPais;
-        UsuarioModificador   = usuarioModificador;
-        FechaModificacion    = DateTime.Now;
+        NumDocumento = numDocumento?.Trim();
+        CodValidadorDoc = codValidadorDoc?.Trim();
+        IdPais = idPais;
+        UsuarioModificador = usuarioModificador;
+        FechaModificacion = DateTime.Now;
 
         var local = _clienteLocales.FirstOrDefault();
         if (local is not null)
