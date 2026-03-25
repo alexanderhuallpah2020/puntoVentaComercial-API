@@ -5,10 +5,10 @@ namespace DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Queries
 public sealed record SearchVentasQuery(
     DateTime? FechaDesde,
     DateTime? FechaHasta,
-    int? IdCliente,
-    short? NumSerie,
+    string? NombreCliente,
+    string? NumSerieA,
+    int? NumDocumento,
     short? IdTipoDocumento,
     string? Estado,
-    short? IdSucursal,
     int Page,
     int PageSize) : IQuery<SearchVentasResponse>;

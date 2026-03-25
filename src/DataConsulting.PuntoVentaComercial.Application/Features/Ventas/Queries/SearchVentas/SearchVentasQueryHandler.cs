@@ -13,11 +13,11 @@ internal sealed class SearchVentasQueryHandler(IVentaRepository repository)
         var (items, total) = await repository.SearchAsync(
             request.FechaDesde,
             request.FechaHasta,
-            request.IdCliente,
-            request.NumSerie,
+            request.NombreCliente,
+            request.NumSerieA,
+            request.NumDocumento,
             request.IdTipoDocumento,
             request.Estado,
-            request.IdSucursal,
             request.Page,
             request.PageSize,
             cancellationToken);
@@ -26,9 +26,9 @@ internal sealed class SearchVentasQueryHandler(IVentaRepository repository)
             items.Select(v => new SearchVentasItemResponse(
                 v.Id,
                 v.IdTipoDocumento,
-                v.NumSerie,
-                v.NumeroDocumento,
-                v.IdCliente,
+                v.NumSerieA,
+                v.NumeroDocumentoA,
+                v.Emision?.ClienteNombre ?? "",
                 v.Vendedor,
                 v.FechaEmision,
                 v.Estado,

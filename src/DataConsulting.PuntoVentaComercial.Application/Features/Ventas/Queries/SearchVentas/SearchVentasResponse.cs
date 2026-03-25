@@ -9,9 +9,9 @@ public sealed record SearchVentasResponse(
 public sealed record SearchVentasItemResponse(
     int IdVenta,
     short IdTipoDocumento,
-    short? NumSerie,
-    int? NumeroDocumento,
-    int IdCliente,
+    string? NumSerieA,
+    string? NumeroDocumentoA,
+    string ClienteNombre,
     short Vendedor,
     DateTime FechaEmision,
     string Estado,

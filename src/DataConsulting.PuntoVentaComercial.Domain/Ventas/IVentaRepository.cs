@@ -6,11 +6,11 @@ public interface IVentaRepository
     Task<(IList<Venta> Items, int Total)> SearchAsync(
         DateTime? fechaDesde,
         DateTime? fechaHasta,
-        int? idCliente,
-        short? numSerie,
+        string? nombreCliente,
+        string? numSerieA,
+        int? numDocumento,
         short? idTipoDocumento,
         string? estado,
-        short? idSucursal,
         int page,
         int pageSize,
         CancellationToken ct);

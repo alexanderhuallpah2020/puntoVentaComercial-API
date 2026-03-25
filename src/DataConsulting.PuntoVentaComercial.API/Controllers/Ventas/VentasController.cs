@@ -81,19 +81,19 @@ public sealed class VentasController(
     public async Task<IActionResult> Search(
         [FromQuery] DateTime? fechaDesde,
         [FromQuery] DateTime? fechaHasta,
-        [FromQuery] int? idCliente,
-        [FromQuery] short? numSerie,
+        [FromQuery] string? nombreCliente,
+        [FromQuery] string? numSerieA,
+        [FromQuery] int? numDocumento,
         [FromQuery] short? idTipoDocumento,
         [FromQuery] string? estado,
-        [FromQuery] short? idSucursal,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,
         CancellationToken ct = default)
     {
         var result = await searchHandler.Handle(
             new SearchVentasQuery(
-                fechaDesde, fechaHasta, idCliente, numSerie,
-                idTipoDocumento, estado, idSucursal, page, pageSize), ct);
+                fechaDesde, fechaHasta, nombreCliente, numSerieA,
+                numDocumento, idTipoDocumento, estado, page, pageSize), ct);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
