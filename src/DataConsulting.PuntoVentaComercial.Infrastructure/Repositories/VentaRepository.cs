@@ -157,19 +157,28 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
 
     public async Task<VentaAnulacionGuardsDto?> GetAnulacionGuardsAsync(int idVenta, CancellationToken ct)
     {
-        var rows = await DbContext.Database
-            .SqlQuery<VentaGuardsRow>(
-                $"SELECT FlagGuiaRemision, FlagNotaCD, FlagValorCambio, EstadoContable FROM dbo.Venta WHERE IdVenta = {idVenta}")
+        // FlagGuiaRemision y FlagNotaCD no son columnas de dbo.Venta;
+        // son calculados por el SP a partir de tablas relacionadas.
+        var spRows = await DbContext.Database
+            .SqlQuery<VentaGuardsRow>($"EXEC dbo.GetVentaByIdVenta {idVenta}")
             .ToListAsync(ct);
 
-        var row = rows.FirstOrDefault();
+        var row = spRows.FirstOrDefault();
         if (row is null) return null;
+
+        // EstadoContable no está en el SP — se obtiene directamente de la tabla.
+        // DEFAULT = 1 significa "no contabilizado"; si el módulo contable lo procesa,
+        // cambia a otro valor. Se bloquea la anulación si EstadoContable != 1 (y != null).
+        var ecRows = await DbContext.Database
+            .SqlQuery<byte?>($"SELECT EstadoContable FROM dbo.Venta WHERE IdVenta = {idVenta}")
+            .ToListAsync(ct);
+        byte estadoContable = ecRows.FirstOrDefault() ?? 1;
 
         return new VentaAnulacionGuardsDto(
             TieneGuiaRemision: row.FlagGuiaRemision == 1,
             TieneNotaCD:       row.FlagNotaCD == 1,
             TieneValorCambio:  row.FlagValorCambio == 1,
-            EstaContabilizada: row.EstadoContable != 0);
+            EstaContabilizada: estadoContable != 1);
     }
 
     public async Task<bool> TieneMovimientoIngresoAsync(int idVenta, CancellationToken ct)
@@ -187,25 +196,44 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
     public async Task<bool> PeriodoAbiertoPorFechaAsync(short idSucursal, DateTime fechaEmision, CancellationToken ct)
     {
         // IdTipoPeriodo=8701 (mensual), IdModulo=8602 (Ventas), IdAlmacen=0
-        const short idTipoPeriodo = 8701;
-        const short idModulo      = 8602;
-        const int   idAlmacen     = 0;
+        // BusCierrePeriodo tiene columnas duplicadas → valores inline (sin named params).
+        int cierreId = await LeerPrimerIntSpAsync(
+            $"EXEC dbo.BusCierrePeriodo {(int)idSucursal}, 8701, 8602, 0", ct);
 
-        var cierreIds = await DbContext.Database
-            .SqlQuery<int>(
-                $"EXEC dbo.BusCierrePeriodo {idSucursal}, {idTipoPeriodo}, {idModulo}, {idAlmacen}")
-            .ToListAsync(ct);
-
-        int cierreId = cierreIds.FirstOrDefault();
         if (cierreId == 0) return true; // Sin cierre → período abierto
 
-        var cierres = await DbContext.Database
-            .SqlQuery<CierrePeriodoRow>($"EXEC dbo.GetCierrePeriodo {cierreId}")
+        // GetCierrePeriodo tiene cp.IdSucursal duplicado → consulta directa a la tabla.
+        var estados = await DbContext.Database
+            .SqlQuery<byte>($"SELECT Estado FROM dbo.CierrePeriodo WHERE IdCierrePeriodo = {cierreId}")
             .ToListAsync(ct);
 
-        // Estado 2 = Cerrado (convención estándar del sistema)
-        var cierre = cierres.FirstOrDefault();
-        return cierre is null || cierre.Estado < 2;
+        // Estado 2 = Cerrado
+        byte estado = estados.FirstOrDefault();
+        return estado < 2;
+    }
+
+    /// <summary>
+    /// Ejecuta SQL con valores inline y retorna el primer entero de la primera fila (0 si vacío/NULL).
+    /// Útil cuando el SP devuelve columnas duplicadas que rompen SqlQuery&lt;T&gt;.
+    /// </summary>
+    private async Task<int> LeerPrimerIntSpAsync(string sql, CancellationToken ct)
+    {
+        var conn = (Microsoft.Data.SqlClient.SqlConnection)DbContext.Database.GetDbConnection();
+        bool wasOpen = conn.State == System.Data.ConnectionState.Open;
+        if (!wasOpen) await conn.OpenAsync(ct);
+        try
+        {
+            await using var cmd = new Microsoft.Data.SqlClient.SqlCommand(sql, conn);
+            await using var reader = await cmd.ExecuteReaderAsync(
+                System.Data.CommandBehavior.SingleRow, ct);
+            if (await reader.ReadAsync(ct) && !await reader.IsDBNullAsync(0, ct))
+                return reader.GetInt32(0);
+            return 0;
+        }
+        finally
+        {
+            if (!wasOpen) await conn.CloseAsync();
+        }
     }
 
     public async Task AnularVentaCompletaAsync(int idVenta, short idTipoVenta, string usuario, CancellationToken ct)
@@ -223,11 +251,10 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
             var opRef = opRefs.FirstOrDefault();
             if (opRef is not null)
             {
-                // 1b. Cargar cabecera de la cobranza
-                short idEmpresa = 1;
+                // 1b. Cargar cabecera de la cobranza (IdEmpresa viene del mismo SP ref)
                 var opRows = await DbContext.Database
                     .SqlQuery<OperacionPagoRow>(
-                        $"EXEC dbo.GetOperacionPago {idEmpresa}, {opRef.TipoOperacion}, {opRef.NroOperacion}")
+                        $"EXEC dbo.GetOperacionPago {opRef.IdEmpresa}, {opRef.TipoOperacion}, {opRef.NroOperacion}")
                     .ToListAsync(ct);
                 var op = opRows.FirstOrDefault();
 
@@ -256,7 +283,7 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
                         await DbContext.Database.ExecuteSqlRawAsync(
                             "EXEC dbo.UpdOperacionPagoDetalle @IdEmpresa,@TipoOperacion,@NroOperacion,@Secuencia," +
                             "@IdFormaPago,@IdTipoMoneda,@Importe,@IdDocumentoRef,@SecuenciaRef,@Estado,@NumReferencia,@SecuenciaEntidadRef",
-                            BuildOperacionPagoDetalleParams(idEmpresa, d, estado: 0));
+                            BuildOperacionPagoDetalleParams(opRef.IdEmpresa, d, estado: 0));
 
                     // 1g. Anular amortización de la provisión (CuentaAmortizacion Estado=0)
                     if (provision is not null)
@@ -264,7 +291,7 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
                             "EXEC dbo.UpdCuentaAmortizacion @IdEmpresa,@TipoOperacion,@NroOperacion," +
                             "@TipoOperacionRef,@IdOperacion,@Secuencia,@Importe,@Retencion,@Descuento," +
                             "@Estado,@Detraccion,@Percepcion",
-                            BuildCuentaAmortizacionParams(idEmpresa, op, provision, estado: 0));
+                            BuildCuentaAmortizacionParams(opRef.IdEmpresa, op, provision, estado: 0));
                 }
 
                 // 1h. Restaurar CuentaPendiente a Estado=1 (revertir cobro)
@@ -302,19 +329,17 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
     private async Task<CuentaPendienteRow?> GetCuentaPendienteActivaAsync(
         byte tipoOperacion, int idOperacion, CancellationToken ct)
     {
-        short idEmpresa = 1;
-        int   secuencia = 0, idEntidad = 0, idTipoDocumento = 0, numSerie = 0;
-        int   numDocumento = 0, idOperacionRef = 0;
-        int   flagTipoProvision = 0, flagFacturado = 0, flagInicial = 0, flagLiquidado = 0;
-        int   estado = 1;
-        var   fechaMax = new DateTime(2079, 6, 6);
-        string numSerieA = "", numDocumentoA = "";
-
-        FormattableString sql =
-            $"EXEC dbo.GetCuentaPendiente {idEmpresa},{tipoOperacion},{idOperacion},{secuencia},{idEntidad},{fechaMax},{idTipoDocumento},{numSerie},{numDocumento},{flagTipoProvision},{flagFacturado},{estado},{flagInicial},{idOperacionRef},{flagLiquidado},{numSerieA},{numDocumentoA}";
-
+        // GetCuentaPendiente tiene FechaPago duplicado → consulta directa a la tabla.
         var rows = await DbContext.Database
-            .SqlQuery<CuentaPendienteRow>(sql)
+            .SqlQuery<CuentaPendienteRow>($"""
+                SELECT TOP 1 IdEmpresa, TipoOperacion, IdOperacion, Secuencia, IdTipoMoneda,
+                    Importe, Saldo, Descuentos, Retenciones, SaldoRetencion, FechaPago, Estado,
+                    IdEntidad, UpdateToken, Detracciones, SaldoDetraccion, FlagTipo,
+                    MontoInteres, Glosa, FlagFacturado, IdTipoDocumento, Percepciones,
+                    SaldoPercepcion, IdOperacionRef, FlagInicial, FlagLiquidado
+                FROM dbo.CuentaPendiente
+                WHERE TipoOperacion = {tipoOperacion} AND IdOperacion = {idOperacion} AND Estado = 1
+                """)
             .ToListAsync(ct);
         return rows.FirstOrDefault();
     }
@@ -357,7 +382,7 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
     ];
 
     private static SqlParameter[] BuildOperacionPagoDetalleParams(
-        short idEmpresa, OperacionPagoDetalleRow d, int estado) =>
+        int idEmpresa, OperacionPagoDetalleRow d, int estado) =>
     [
         new("@IdEmpresa",          idEmpresa),
         new("@TipoOperacion",      d.TipoOperacion),
@@ -374,7 +399,7 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
     ];
 
     private static SqlParameter[] BuildCuentaAmortizacionParams(
-        short idEmpresa, OperacionPagoRow op, CuentaPendienteRow cp, int estado) =>
+        int idEmpresa, OperacionPagoRow op, CuentaPendienteRow cp, int estado) =>
     [
         new("@IdEmpresa",       idEmpresa),
         new("@TipoOperacion",   op.TipoOperacion),
@@ -411,8 +436,8 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
         new("@Detracciones",    cp.Detracciones),
         new("@SaldoDetraccion", cp.SaldoDetraccion),
         new("@FlagTipo",        cp.FlagTipo),
-        new("@IdOperacionNew",  (object?)cp.IdOperacionNew ?? DBNull.Value),
-        new("@SecuenciaNew",    (object?)cp.SecuenciaNew   ?? DBNull.Value),
+        new("@IdOperacionNew",  cp.IdOperacion),   // OUTPUT param: mantener la misma PK
+        new("@SecuenciaNew",    (int)cp.Secuencia), // OUTPUT param: mantener la misma PK
         new("@MontoInteres",    cp.MontoInteres),
         new("@Glosa",           (object?)cp.Glosa          ?? DBNull.Value),
         new("@FlagFacturado",   cp.FlagFacturado),
@@ -426,12 +451,15 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
 
     // ── Clases de proyección privadas (solo Infrastructure) ──────────────────
 
+    // Solo declara las columnas que necesitamos; EF Core ignora las demás del SP.
+    // EstadoContable NO está en GetVentaByIdVenta — se consulta por separado.
+    // FlagGuiaRemision/FlagNotaCD son CASE…THEN 1 ELSE 0 → INT.
+    // FlagValorCambio es columna TINYINT → byte.
     private sealed class VentaGuardsRow
     {
         public int  FlagGuiaRemision { get; set; }
         public int  FlagNotaCD       { get; set; }
-        public int  FlagValorCambio  { get; set; }
-        public int  EstadoContable   { get; set; }
+        public byte FlagValorCambio  { get; set; }
     }
 
     private sealed class GuiaRefRow
@@ -439,16 +467,13 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
         public int IdGuiaRemision { get; set; }
     }
 
-    private sealed class CierrePeriodoRow
-    {
-        public int IdCierrePeriodo { get; set; }
-        public int Estado          { get; set; }
-    }
-
+    // GetOperacionPagoByDocumento retorna: IdEmpresa, TipoOperacion, NroOperacion, IdCajaChica
     private sealed class OperacionPagoRefRow
     {
-        public int TipoOperacion { get; set; }
-        public int NroOperacion  { get; set; }
+        public int  IdEmpresa     { get; set; }
+        public int  TipoOperacion { get; set; }
+        public int  NroOperacion  { get; set; }
+        public int? IdCajaChica   { get; set; }
     }
 
     private sealed class OperacionPagoRow
@@ -499,35 +524,35 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
         public int?     SecuenciaEntidadRef{ get; set; }
     }
 
+    // Tipos exactos según DDL de dbo.CuentaPendiente.
+    // IdOperacionNew/SecuenciaNew son OUTPUT params de UpdCuentaPendiente, NO columnas de la tabla.
     private sealed class CuentaPendienteRow
     {
-        public int      IdEmpresa      { get; set; }
-        public int      TipoOperacion  { get; set; }
-        public int      IdOperacion    { get; set; }
-        public int      Secuencia      { get; set; }
-        public int      IdTipoMoneda   { get; set; }
-        public decimal  Importe        { get; set; }
-        public decimal  Saldo          { get; set; }
-        public decimal  Descuentos     { get; set; }
-        public decimal  Retenciones    { get; set; }
-        public decimal  SaldoRetencion { get; set; }
-        public DateTime FechaPago      { get; set; }
-        public int      Estado         { get; set; }
-        public int      IdEntidad      { get; set; }
-        public int      UpdateToken    { get; set; }
-        public decimal  Detracciones   { get; set; }
-        public decimal  SaldoDetraccion{ get; set; }
-        public int      FlagTipo       { get; set; }
-        public int?     IdOperacionNew { get; set; }
-        public int?     SecuenciaNew   { get; set; }
-        public decimal  MontoInteres   { get; set; }
-        public string?  Glosa          { get; set; }
-        public int      FlagFacturado  { get; set; }
-        public int      IdTipoDocumento{ get; set; }
-        public decimal  Percepciones   { get; set; }
-        public decimal  SaldoPercepcion{ get; set; }
-        public int?     IdOperacionRef { get; set; }
-        public int      FlagInicial    { get; set; }
-        public int      FlagLiquidado  { get; set; }
+        public short    IdEmpresa      { get; set; }  // SMALLINT
+        public byte     TipoOperacion  { get; set; }  // TINYINT
+        public int      IdOperacion    { get; set; }  // INT
+        public short    Secuencia      { get; set; }  // SMALLINT
+        public short    IdTipoMoneda   { get; set; }  // SMALLINT
+        public decimal  Importe        { get; set; }  // MONEY
+        public decimal  Saldo          { get; set; }  // MONEY
+        public decimal  Descuentos     { get; set; }  // MONEY
+        public decimal  Retenciones    { get; set; }  // MONEY
+        public decimal  SaldoRetencion { get; set; }  // MONEY
+        public DateTime FechaPago      { get; set; }  // SMALLDATETIME
+        public byte     Estado         { get; set; }  // TINYINT
+        public int      IdEntidad      { get; set; }  // INT
+        public byte     UpdateToken    { get; set; }  // TINYINT
+        public decimal  Detracciones   { get; set; }  // MONEY
+        public decimal  SaldoDetraccion{ get; set; }  // MONEY
+        public byte     FlagTipo       { get; set; }  // TINYINT
+        public decimal  MontoInteres   { get; set; }  // MONEY
+        public string   Glosa          { get; set; } = string.Empty; // VARCHAR NOT NULL
+        public byte     FlagFacturado  { get; set; }  // TINYINT
+        public short    IdTipoDocumento{ get; set; }  // SMALLINT
+        public decimal  Percepciones   { get; set; }  // MONEY
+        public decimal  SaldoPercepcion{ get; set; }  // MONEY
+        public int?     IdOperacionRef { get; set; }  // INT NULL
+        public byte     FlagInicial    { get; set; }  // TINYINT
+        public byte     FlagLiquidado  { get; set; }  // TINYINT
     }
 }
