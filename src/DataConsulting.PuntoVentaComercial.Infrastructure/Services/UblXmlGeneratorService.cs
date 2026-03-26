@@ -14,7 +14,7 @@ internal sealed class UblXmlGeneratorService(IOptions<SunatSettings> sunatOption
     private const string CurrencyUsd = "USD";
     private const string Fmt = "F2";
 
-    public XmlDocument GenerarFactura(Venta venta, Cliente cliente, EmpresaFirmante firmante, string codigoSunat)
+    public XmlDocument GenerarDocumento(Venta venta, Cliente cliente, EmpresaFirmante firmante, string codigoSunat)
     {
         string templatePath = sunatOptions.Value.RutaPlantillas;
         if (string.IsNullOrWhiteSpace(templatePath))
@@ -24,7 +24,7 @@ internal sealed class UblXmlGeneratorService(IOptions<SunatSettings> sunatOption
         if (!File.Exists(templateFile))
             throw new FileNotFoundException($"XML template not found: {templateFile}");
 
-        var doc = new XmlDocument { PreserveWhitespace = true };
+        var doc = new XmlDocument();
         doc.Load(templateFile);
 
         string moneda = venta.IdTipoMoneda == 2 ? CurrencyUsd : CurrencyPen;
@@ -93,21 +93,30 @@ internal sealed class UblXmlGeneratorService(IOptions<SunatSettings> sunatOption
         }
 
         // --- Customer ---
+        // Boleta (03): comprador puede ser anónimo si importe <= 700 PEN y no tiene documento válido
+        bool esBoleta = codigoSunat == "03";
+        bool compradorAnonimo = esBoleta
+            && venta.ImporteTotal <= 700m
+            && string.IsNullOrWhiteSpace(cliente.NumDocumento);
+
         var customer = doc.GetElementsByTagName("cac:AccountingCustomerParty").Item(0)?.ChildNodes.Item(0);
         if (customer != null)
         {
-            string schemeId = GetClienteSchemeId(cliente);
+            string schemeId = compradorAnonimo ? "0" : GetClienteSchemeId(cliente);
+            string numDoc = compradorAnonimo ? "0" : (cliente.NumDocumento ?? "-");
+            string nombre = compradorAnonimo ? "-" : cliente.Nombre;
+
             var custId = customer.ChildNodes.Item(0)?.ChildNodes.Item(0); // cac:PartyIdentification/cbc:ID
             if (custId != null)
             {
-                custId.InnerText = cliente.NumDocumento ?? "-";
+                custId.InnerText = numDoc;
                 if (custId.Attributes?["schemeID"] is XmlAttribute s) s.Value = schemeId;
             }
             var legalEntity = customer.ChildNodes.Item(1); // cac:PartyLegalEntity
             if (legalEntity != null)
             {
                 var regName = legalEntity.ChildNodes.Item(0);
-                if (regName != null) regName.InnerText = cliente.Nombre;
+                if (regName != null) regName.InnerText = nombre;
             }
         }
 
@@ -298,7 +307,8 @@ internal sealed class UblXmlGeneratorService(IOptions<SunatSettings> sunatOption
 
     private static void SetAmountNode(XmlNode parent, string localName, decimal amount, string currencyId)
     {
-        var node = parent.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.LocalName == localName);
+        string local = localName.Contains(':') ? localName[(localName.IndexOf(':') + 1)..] : localName;
+        var node = parent.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.LocalName == local);
         if (node != null)
         {
             node.InnerText = amount.ToString(Fmt);

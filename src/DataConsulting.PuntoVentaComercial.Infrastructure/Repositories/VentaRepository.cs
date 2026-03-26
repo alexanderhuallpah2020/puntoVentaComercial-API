@@ -123,10 +123,9 @@ internal sealed class VentaRepository(ApplicationDbContext dbContext)
         await DbContext.Database.ExecuteSqlRawAsync(
             "EXEC dbo.UpdVentaArchivoXML @IdVenta, @ArchivoXML, @NombreArchivoXML, @RespuestaXML, @NombreRespuestaXML, @Usuario",
             new Microsoft.Data.SqlClient.SqlParameter("@IdVenta", idVenta),
-            new Microsoft.Data.SqlClient.SqlParameter("@ArchivoXML", xmlBytes),
+            new Microsoft.Data.SqlClient.SqlParameter("@ArchivoXML", System.Data.SqlDbType.Image) { Value = xmlBytes },
             new Microsoft.Data.SqlClient.SqlParameter("@NombreArchivoXML", nombreXml),
-            new Microsoft.Data.SqlClient.SqlParameter("@RespuestaXML",
-                (object?)cdrBytes ?? System.DBNull.Value),
+            new Microsoft.Data.SqlClient.SqlParameter("@RespuestaXML", System.Data.SqlDbType.Image) { Value = (object?)cdrBytes ?? System.DBNull.Value },
             new Microsoft.Data.SqlClient.SqlParameter("@NombreRespuestaXML",
                 (object?)nombreCdr ?? System.DBNull.Value),
             new Microsoft.Data.SqlClient.SqlParameter("@Usuario", usuario));

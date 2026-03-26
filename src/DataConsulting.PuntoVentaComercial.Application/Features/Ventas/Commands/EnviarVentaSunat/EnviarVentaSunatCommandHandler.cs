@@ -51,8 +51,8 @@ internal sealed class EnviarVentaSunatCommandHandler(
         if (firmante is null)
             return Result.Failure<EnviarVentaSunatResponse>(VentaErrors.EmpresaSinFirmante);
 
-        // 6. Generate UBL 2.1 XML
-        var xmlDoc = ublService.GenerarFactura(venta, cliente, firmante, codigoSunat);
+        // 6. Generate UBL 2.1 XML (factura "01" o boleta "03")
+        var xmlDoc = ublService.GenerarDocumento(venta, cliente, firmante, codigoSunat);
 
         // 7. Sign XML with digital certificate
         var settings = sunatOptions.Value;
@@ -89,7 +89,7 @@ internal sealed class EnviarVentaSunatCommandHandler(
 
         // 11. Update SUNAT status on venta
         await ventaRepository.UpdEstadoFacturaElectronicaAsync(
-            request.IdVenta, sunatResponse.CodigoRespuesta, sunatResponse.CodigoRespuesta, "A", cancellationToken);
+            request.IdVenta, sunatResponse.CodigoRespuesta, sunatResponse.Descripcion, "A", cancellationToken);
 
         return Result.Success(new EnviarVentaSunatResponse(
             sunatResponse.CodigoRespuesta,
