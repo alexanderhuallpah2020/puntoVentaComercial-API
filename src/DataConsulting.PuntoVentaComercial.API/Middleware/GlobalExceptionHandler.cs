@@ -61,7 +61,7 @@ namespace DataConsulting.PuntoVentaComercial.API.Middleware
                     StatusCodes.Status500InternalServerError,
                     "ServerError",
                     "Server error",
-                    "Se ha producido un error inesperado",
+                    "Se ha producido un error inesperado. Contacte al administrador.",
                     null)
             };
         }
