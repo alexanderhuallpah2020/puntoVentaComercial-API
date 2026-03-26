@@ -483,4 +483,20 @@ internal sealed class UblXmlGeneratorService(IOptions<SunatSettings> sunatOption
             return millones + (numero % 1_000_000 != 0 ? " " + NumeroEnLetras(numero % 1_000_000) : "");
         }
     }
+
+    // ── Nota de Crédito (07) ─────────────────────────────────────────────────
+
+    public XmlDocument GenerarNotaCredito(Venta venta, Cliente cliente, EmpresaFirmante firmante)
+    {
+        // TODO: implementar generación de XML UBL 2.1 CreditNote
+        throw new NotImplementedException("Generación de Nota de Crédito aún no implementada.");
+    }
+
+    // ── Nota de Débito (08) ──────────────────────────────────────────────────
+
+    public XmlDocument GenerarNotaDebito(Venta venta, Cliente cliente, EmpresaFirmante firmante)
+    {
+        // TODO: implementar generación de XML UBL 2.1 DebitNote
+        throw new NotImplementedException("Generación de Nota de Débito aún no implementada.");
+    }
 }

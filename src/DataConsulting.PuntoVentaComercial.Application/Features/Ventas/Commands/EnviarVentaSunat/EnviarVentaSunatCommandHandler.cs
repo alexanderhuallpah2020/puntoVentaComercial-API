@@ -9,6 +9,7 @@ using DataConsulting.PuntoVentaComercial.Domain.Clientes;
 using DataConsulting.PuntoVentaComercial.Domain.Empresas;
 using DataConsulting.PuntoVentaComercial.Domain.Ventas;
 using Microsoft.Extensions.Options;
+using static DataConsulting.PuntoVentaComercial.Domain.Ventas.CodigosSunat;
 
 namespace DataConsulting.PuntoVentaComercial.Application.Features.Ventas.Commands.EnviarVentaSunat;
 
@@ -51,8 +52,17 @@ internal sealed class EnviarVentaSunatCommandHandler(
         if (firmante is null)
             return Result.Failure<EnviarVentaSunatResponse>(VentaErrors.EmpresaSinFirmante);
 
-        // 6. Generate UBL 2.1 XML (factura "01" o boleta "03")
-        var xmlDoc = ublService.GenerarDocumento(venta, cliente, firmante, codigoSunat);
+        // 6. Generate UBL 2.1 XML according to document type
+        XmlDocument xmlDoc = codigoSunat switch
+        {
+            Factura or Boleta => ublService.GenerarDocumento(venta, cliente, firmante, codigoSunat),
+            NotaCredito       => ublService.GenerarNotaCredito(venta, cliente, firmante),
+            NotaDebito        => ublService.GenerarNotaDebito(venta, cliente, firmante),
+            _                 => null!
+        };
+
+        if (xmlDoc is null)
+            return Result.Failure<EnviarVentaSunatResponse>(VentaErrors.TipoDocumentoNoSoportado(codigoSunat));
 
         // 7. Sign XML with digital certificate
         var settings = sunatOptions.Value;

@@ -36,4 +36,7 @@ public static class VentaErrors
 
     public static readonly Error YaEnviadaASunat =
         Error.Problem("Venta.YaEnviadaASunat", "La venta ya fue enviada y aceptada por SUNAT.");
+
+    public static Error TipoDocumentoNoSoportado(string codigoSunat) =>
+        Error.Problem("Venta.TipoDocumentoNoSoportado", $"El tipo de documento con código SUNAT '{codigoSunat}' no está soportado en el envío electrónico.");
 }
