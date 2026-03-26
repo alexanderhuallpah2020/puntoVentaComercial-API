@@ -137,7 +137,7 @@ public sealed class Venta : Entity
             Vendedor2 = vendedor2,
             FechaEmision = now,
             FechaProceso = now,
-            Estado = "A",
+            Estado = EstadoVenta.Activo,
             IdTipoMoneda = idTipoMoneda,
             TipoCambio = tipoCambio,
             ValorNeto = valorNeto,
@@ -190,10 +190,10 @@ public sealed class Venta : Entity
 
     public Result Anular(string usuarioModificador, DateTime now)
     {
-        if (Estado != "A")
+        if (Estado != EstadoVenta.Activo)
             return Result.Failure(VentaErrors.EstadoInvalidoParaAnular);
 
-        Estado = "E";
+        Estado = EstadoVenta.Anulado;
         UsuarioUpdate = usuarioModificador;
         FechaUpdate = now;
         UpdateToken++;

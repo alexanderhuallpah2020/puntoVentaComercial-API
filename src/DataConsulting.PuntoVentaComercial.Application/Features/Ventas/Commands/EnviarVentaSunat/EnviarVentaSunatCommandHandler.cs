@@ -31,7 +31,7 @@ internal sealed class EnviarVentaSunatCommandHandler(
         var (codigoSunatPrevio, _, codigoSunat) = await ventaRepository.BuscarCodigoSunatVentaAsync(
             request.IdVenta, cancellationToken);
 
-        if (codigoSunatPrevio == "0")
+        if (codigoSunatPrevio == CodigosSunat.Aceptado)
             return Result.Failure<EnviarVentaSunatResponse>(VentaErrors.YaEnviadaASunat);
 
         if (string.IsNullOrWhiteSpace(codigoSunat))

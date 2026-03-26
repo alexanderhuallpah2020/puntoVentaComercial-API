@@ -33,4 +33,23 @@ public interface IVentaRepository
     Task InsVentaXmlLogAsync(int idVenta, string nombreXml, string nombreZip, int resultado, CancellationToken ct);
     Task UpdVentaArchivoXmlAsync(int idVenta, byte[] xmlBytes, string nombreXml, byte[]? cdrBytes, string? nombreCdr, string usuario, CancellationToken ct);
     Task UpdEstadoFacturaElectronicaAsync(int idVenta, string codigoSunat, string estadoSunat, string estado, CancellationToken ct);
+
+    // ── Anulación ────────────────────────────────────────────────────────────
+
+    /// <summary>Retorna flags de validación necesarios antes de anular (FlagGuiaRemision, FlagNotaCD, etc.).</summary>
+    Task<VentaAnulacionGuardsDto?> GetAnulacionGuardsAsync(int idVenta, CancellationToken ct);
+
+    /// <summary>Verifica si la venta tiene movimientos de ingreso al almacén asociados.</summary>
+    Task<bool> TieneMovimientoIngresoAsync(int idVenta, CancellationToken ct);
+
+    /// <summary>Verifica que el período contable del módulo Ventas esté abierto para la fecha indicada.</summary>
+    Task<bool> PeriodoAbiertoPorFechaAsync(short idSucursal, DateTime fechaEmision, CancellationToken ct);
+
+    /// <summary>
+    /// Ejecuta la secuencia completa de anulación:<br/>
+    /// • Para VENTA DIRECTA (IdTipoVenta=3): anula OperacionPago + CuentaPendiente.<br/>
+    /// • Llama a <c>dbo.ExtornarVenta</c>.<br/>
+    /// • Voidea la provisión (CuentaPendiente Estado=0).
+    /// </summary>
+    Task AnularVentaCompletaAsync(int idVenta, short idTipoVenta, string usuario, CancellationToken ct);
 }

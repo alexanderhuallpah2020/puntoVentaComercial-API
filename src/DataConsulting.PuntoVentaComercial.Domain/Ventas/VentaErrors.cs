@@ -13,6 +13,9 @@ public static class VentaErrors
     public static readonly Error PagoInsuficiente =
         Error.Problem("Venta.PagoInsuficiente", "El monto de pago debe ser mayor o igual al total de la venta.");
 
+    public static readonly Error YaAnulada =
+        Error.Problem("Venta.YaAnulada", "El documento ya ha sido anulado.");
+
     public static readonly Error EstadoInvalidoParaAnular =
         Error.Problem("Venta.EstadoInvalidoParaAnular", "Solo se puede anular una venta en estado Emitida.");
 
@@ -39,4 +42,27 @@ public static class VentaErrors
 
     public static Error TipoDocumentoNoSoportado(string codigoSunat) =>
         Error.Problem("Venta.TipoDocumentoNoSoportado", $"El tipo de documento con código SUNAT '{codigoSunat}' no está soportado en el envío electrónico.");
+
+    // ── Validaciones de anulación ────────────────────────────────────────────
+
+    public static readonly Error AceptadaEnSunat =
+        Error.Problem("Venta.AceptadaEnSunat", "El documento fue enviado a SUNAT y está aceptado. No puede ser anulado.");
+
+    public static readonly Error TieneGuiaRemision =
+        Error.Problem("Venta.TieneGuiaRemision", "El documento tiene salidas de almacén asociadas.");
+
+    public static readonly Error TieneNotaCD =
+        Error.Problem("Venta.TieneNotaCD", "El documento tiene notas de crédito o débito asociadas.");
+
+    public static readonly Error TieneValorCambio =
+        Error.Problem("Venta.TieneValorCambio", "El documento está asociado a una liquidación como forma de pago.");
+
+    public static readonly Error EstaContabilizada =
+        Error.Problem("Venta.EstaContabilizada", "El documento se encuentra contabilizado. No puede ser anulado.");
+
+    public static readonly Error TieneIngresoAlmacen =
+        Error.Problem("Venta.TieneIngresoAlmacen", "El documento tiene un ingreso de almacén asociado.");
+
+    public static readonly Error PeriodoCerrado =
+        Error.Problem("Venta.PeriodoCerrado", "El período contable está cerrado para la fecha de emisión del documento.");
 }
